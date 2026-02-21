@@ -1,3 +1,6 @@
+from src.widget import get_date, mask_account_card
+
+
 def run_simple_tests():
     print("=== Тестирование mask_account_card ===")
 
