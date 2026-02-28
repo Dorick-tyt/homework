@@ -11,10 +11,12 @@ def get_mask_card_number(card_number: str) -> str:
     if not cleaned.isdigit():
         return str(ValueError("Номер карты должен содержать только цифры"))
 
-    # Формируем маску
-    if len(cleaned) == 16:
-        masked = cleaned[:4] + " " + cleaned[4:6] + "** **** " + cleaned[-4:]
+    # Проверяем длину — должна быть 16 цифрФормируем маску
+    if len(cleaned) != 16:
+        return str(ValueError("Номер карты должен содержать 16 цифр"))
 
+    # Формируем маску
+    masked = cleaned[:4] + " " + cleaned[4:6] + "** **** " + cleaned[-4:]
     return masked
 
 

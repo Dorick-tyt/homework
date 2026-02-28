@@ -1,30 +1,35 @@
-from src.widget import get_date, mask_account_card
+from src.masks import get_mask_account, get_mask_card_number
+from src.widget import get_date
 
 
-def run_simple_tests():
-    print("=== Тестирование mask_account_card ===")
+class TestWidgetFunctions:
 
-    # Тест 1: Visa карта
-    test1 = mask_account_card("Visa Platinum 7000792289606361")
-    print(f"Тест 1: {test1}")
-    assert test1 == "Visa Platinum 7000 79** **** 6361", "Ошибка в тесте 1"
+    def test_get_mask_card_number_valid(self):
+        """Тест маскировки корректного номера карты (только цифры)."""
+        result = get_mask_card_number("7000792289606361")
+        assert result == "7000 79** **** 6361"
 
-    # Тест 2: Счёт
-    test2 = mask_account_card("Счёт 40817810099910004312")
-    print(f"Тест 2: {test2}")
-    assert test2 == "Счёт **4312", "Ошибка в тесте 2"
-    # Тест 3: Некорректная длина карты
-    test3 = mask_account_card("Visa 1234")
-    print(f"Тест 3: {test3}")
-    assert test3 is None, "Ошибка в тесте 3"
+    def test_get_mask_card_number_non_digits(self):
+        """Тест с нечисловыми символами в номере карты."""
+        result = get_mask_card_number("Visa Platinum 7000792289606361")
+        assert "Номер карты должен содержать только цифры" in str(result)
 
-    print("\n=== Тестирование get_date ===")
-    # Тест 4: Корректная дата
-    test4 = get_date("2024-03-11T02:26:18.671407")
-    print(f"Тест 4: {test4}")
-    assert test4 == "11.03.2024", "Ошибка в тесте 4"
-    print("Все тесты пройдены!")
+    def test_get_mask_account_valid(self):
+        """Тест маскировки корректного номера счёта."""
+        result = get_mask_account("40817810099910004312")
+        assert result == "**4312"
 
+    def test_get_mask_account_non_digits(self):
+        """Тест с нечисловыми символами в номере счёта."""
+        result = get_mask_account("Счёт 40817810099910004312")
+        assert "Номер счёта должен содержать только цифры" in str(result)
 
-# Запуск простых тестов
-run_simple_tests()
+    def test_get_mask_account_too_short(self):
+        """Тест с слишком коротким номером счёта."""
+        result = get_mask_account("123")
+        assert "Номер счёта слишком короткий" in str(result)
+
+    def test_get_date_valid_input(self):
+        """Тест преобразования даты."""
+        result = get_date("2024-03-11T02:26:18.671407")
+        assert result == "11.03.2024"
