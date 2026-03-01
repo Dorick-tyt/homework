@@ -15,14 +15,16 @@ class TestProcessingFunctions:
     # Тесты для filter_by_state
     def test_filter_by_state_default(self):
         """Тест filter_by_state с состоянием по умолчанию (EXECUTED)."""
-        result = filter_by_state(TEST_DATA)
+        data = sample_data()
+        result = filter_by_state(data)
         assert len(result) == 2
         assert all(item["state"] == "EXECUTED" for item in result)
 
     # Тесты для sort_by_date
     def test_sort_by_date_descending(self):
         """Тест sort_by_date — сортировка по убыванию даты (по умолчанию)."""
-        result = sort_by_date(TEST_DATA)
+        data = sample_data()
+        result = sort_by_date(data)
         dates = [item["date"] for item in result]
         expected_dates = [
             "2023-01-04T13:00:00",  # id: 4 (самая новая дата)
