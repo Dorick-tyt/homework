@@ -6,9 +6,9 @@ def filter_by_currency(transactions, currency_code):
     for transaction in transactions:
         # Проверяем, что в транзакции есть поле operationAmount и currency, а также код валюты
         if (
-            'operationAmount' in transaction
-            and 'currency' in transaction['operationAmount']
-            and transaction['operationAmount']['currency']['code'] == currency_code
+            "operationAmount" in transaction
+            and "currency" in transaction["operationAmount"]
+            and transaction["operationAmount"]["currency"]["code"] == currency_code
         ):
             yield transaction
 
@@ -20,9 +20,8 @@ def transaction_descriptions(transactions):
     """
 
     for transaction in transactions:
-        if 'description' in transaction:
-            yield transaction['description']
-
+        if "description" in transaction:
+            yield transaction["description"]
 
 
 def card_number_generator(start, end):
@@ -40,5 +39,7 @@ def card_number_generator(start, end):
         # Преобразуем число в строку и дополняем нулями слева до 16 символов
         num_str = f"{number:016d}"
         # Форматируем строку в формат XXXX XXXX XXXX XXXX
-        formatted_number = f"{num_str[:4]} {num_str[4:8]} {num_str[8:12]} {num_str[12:]}"
+        formatted_number = (
+            f"{num_str[:4]} {num_str[4:8]} {num_str[8:12]} {num_str[12:]}"
+        )
         yield formatted_number
