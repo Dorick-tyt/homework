@@ -1,4 +1,5 @@
 import unittest
+from parameterized import parameterized
 from src.generators import (
     filter_by_currency,
     transaction_descriptions,
@@ -6,10 +7,9 @@ from src.generators import (
 )
 
 
-class TestFunctions(unittest.TestCase):
+class TestFilterByCurrency(unittest.TestCase):
 
     def setUp(self):
-        """Подготавливаем тестовые данные перед каждым тестом."""
         self.transactions = [
             {
                 "id": 939719570,
@@ -37,71 +37,113 @@ class TestFunctions(unittest.TestCase):
             },
         ]
 
-    def test_filter_by_currency_usd(self):
-        """Тест фильтрации транзакций по валюте USD."""
-        usd_transactions = list(filter_by_currency(self.transactions, "USD"))
-        self.assertEqual(len(usd_transactions), 1)  # Было 2, стало 1
-        self.assertEqual(
-            usd_transactions[0]["operationAmount"]["currency"]["code"], "USD"
+    @parameterized.expand(
+        [
+            # Тест 1: Фильтрация по USD
+            ("USD", 1, "USD"),
+            # Тест 2: Фильтрация по EUR
+            ("EUR", 1, "EUR"),
+            # Тест 3: Нет совпадений (RUB)
+            ("RUB", 0, None),
+            # Тест 4: Пустой список транзакций
+            ("USD", 0, None, []),
+            # Тест 5: Транзакции без поля operationAmount
+            (
+                "USD",
+                0,
+                None,
+                [
+                    {"id": 1, "description": "Без суммы"},
+                    {"id": 2, "description": "Тоже без суммы"},
+                ],
+            ),
+        ]
+    )
+    def test_filter_by_currency(
+        self, currency_code, expected_count, expected_currency, transactions=None
+    ):
+        """Параметризованный тест фильтрации транзакций по валюте."""
+        test_transactions = (
+            transactions if transactions is not None else self.transactions
         )
 
-    def test_filter_by_currency_eur(self):
-        """Тест фильтрации транзакций по валюте EUR."""
-        eur_transactions = list(filter_by_currency(self.transactions, "EUR"))
-        self.assertEqual(len(eur_transactions), 1)
-        self.assertEqual(
-            eur_transactions[0]["operationAmount"]["currency"]["code"], "EUR"
-        )
+        filtered = list(filter_by_currency(test_transactions, currency_code))
+        self.assertEqual(len(filtered), expected_count)
 
-    def test_filter_by_currency_no_matches(self):
-        """Тест фильтрации, когда нет совпадений."""
-        rub_transactions = list(filter_by_currency(self.transactions, "RUB"))
-        self.assertEqual(len(rub_transactions), 0)
+        if expected_count > 0 and expected_currency:
+            self.assertEqual(
+                filtered[0]["operationAmount"]["currency"]["code"], expected_currency
+            )
 
-    def test_transaction_descriptions(self):
-        """Тест генератора описаний транзакций."""
-        descriptions = list(transaction_descriptions(self.transactions))
-        expected = [
-            "Перевод организации",
-            "Перевод со счета на счет",
-        ]  # Удален лишний элемент
+
+class TestTransactionDescriptions(unittest.TestCase):
+
+    @parameterized.expand(
+        [
+            # Тест 1: Нормальный случай — 2 транзакции с описаниями
+            (
+                [
+                    {"description": "Перевод организации"},
+                    {"description": "Перевод со счета на счет"},
+                ],
+                ["Перевод организации", "Перевод со счета на счет"],
+            ),
+            # Тест 2: Пустой список
+            ([], []),
+            # Тест 3: Транзакции без описаний
+            ([{"id": 1}, {"id": 2}], []),
+            # Тест 4: Смешанный случай (есть и нет описаний)
+            (
+                [
+                    {"description": "Первое описание"},
+                    {"id": 2},
+                    {"description": "Третье описание"},
+                ],
+                ["Первое описание", "Третье описание"],
+            ),
+            # Тест 5: Одна транзакция с описанием
+            ([{"description": "Одиночное описание"}], ["Одиночное описание"]),
+        ]
+    )
+    def test_transaction_descriptions(self, transactions, expected):
+        """Параметризованный тест извлечения описаний транзакций."""
+        descriptions = list(transaction_descriptions(transactions))
         self.assertEqual(descriptions, expected)
 
-    def test_transaction_descriptions_empty_list(self):
-        """Тест генератора описаний для пустого списка транзакций."""
-        empty_descriptions = list(transaction_descriptions([]))
-        self.assertEqual(empty_descriptions, [])
 
-    def test_card_number_generator_small_range(self):
-        """Тест генератора номеров карт для небольшого диапазона."""
-        cards = list(card_number_generator(1, 3))
-        expected = ["0000 0000 0000 0001", "0000 0000 0000 0002", "0000 0000 0000 0003"]
+class TestCardNumberGenerator(unittest.TestCase):
+
+    @parameterized.expand(
+        [
+            # Тест 1: Небольшой диапазон
+            (
+                1,
+                3,
+                ["0000 0000 0000 0001", "0000 0000 0000 0002", "0000 0000 0000 0003"],
+            ),
+            # Тест 2: Один номер
+            (42, 42, ["0000 0000 0000 0042"]),
+            # Тест 3: Минимальное значение
+            (1, 1, ["0000 0000 0000 0001"]),
+            # Тест 4: Максимальное значение
+            (9999999999999999, 9999999999999999, ["9999 9999 9999 9999"]),
+            # Тест 5: start < 1 (должно начаться с 1)
+            (-5, 2, ["0000 0000 0000 0001", "0000 0000 0000 0002"]),
+            # Тест 6: end > max (должно закончиться на max)
+            (
+                9999999999999998,
+                9999999999999999 + 10,
+                ["9999 9999 9999 9998", "9999 9999 9999 9999"],
+            ),
+            # Тест 7: Большой диапазон (первые 3 элемента)
+            (
+                9999999999999997,
+                9999999999999999,
+                ["9999 9999 9999 9997", "9999 9999 9999 9998", "9999 9999 9999 9999"],
+            ),
+        ]
+    )
+    def test_card_number_generator(self, start, end, expected):
+        """Параметризованный тест генератора номеров карт."""
+        cards = list(card_number_generator(start, end))
         self.assertEqual(cards, expected)
-
-    def test_card_number_generator_single_number(self):
-        """Тест генератора номеров карт для одного числа."""
-        cards = list(card_number_generator(42, 42))
-        expected = ["0000 0000 0000 0042"]
-        self.assertEqual(cards, expected)
-
-    def test_card_number_generator_boundary_values(self):
-        """Тест граничных значений генератора номеров карт."""
-        # Тест минимального значения
-        min_card = next(card_number_generator(1, 1))
-        self.assertEqual(min_card, "0000 0000 0000 0001")
-
-        # Тест максимального значения (ограниченного в функции)
-        max_card = next(card_number_generator(9999999999999999, 9999999999999999))
-        self.assertEqual(max_card, "9999 9999 9999 9999")
-
-    def test_card_number_generator_out_of_bounds(self):
-        """Тест обработки значений за пределами допустимого диапазона."""
-        # start < 1
-        cards1 = list(card_number_generator(-5, 2))
-        expected1 = ["0000 0000 0000 0001", "0000 0000 0000 0002"]
-        self.assertEqual(cards1, expected1)
-
-        # end > max
-        cards2 = list(card_number_generator(9999999999999998, 9999999999999999 + 10))
-        expected2 = ["9999 9999 9999 9998", "9999 9999 9999 9999"]
-        self.assertEqual(cards2, expected2)
