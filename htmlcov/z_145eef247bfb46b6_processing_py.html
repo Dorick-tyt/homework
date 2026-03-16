@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Coverage for src\processing.py: 74%</title>
+    <title>Coverage for src\processing.py: 70%</title>
     <link rel="icon" sizes="32x32" href="favicon_32_cb_c827f16f.png">
     <link rel="stylesheet" href="style_cb_5c747636.css" type="text/css">
     <script src="coverage_html_cb_188fc9a4.js" defer></script>
@@ -12,7 +12,7 @@
     <div class="content">
         <h1>
             <span class="text">Coverage for </span><b>src&#8201;\&#8201;processing.py</b>:
-            <span class="pc_cov">74%</span>
+            <span class="pc_cov">70%</span>
         </h1>
         <aside id="help_panel_wrapper">
             <input id="help_panel_state" type="checkbox">
@@ -26,6 +26,7 @@
                         <kbd>r</kbd>
                         <kbd>m</kbd>
                         <kbd>x</kbd>
+                        <kbd>p</kbd>
                         &nbsp; toggle line displays
                     </p>
                     <p>
@@ -58,6 +59,7 @@
             <button type="button" class="run button_toggle_run" value="run" data-shortcut="r" title="Toggle lines run">14<span class="text"> run</span></button>
             <button type="button" class="mis show_mis button_toggle_mis" value="mis" data-shortcut="m" title="Toggle lines missing">5<span class="text"> missing</span></button>
             <button type="button" class="exc show_exc button_toggle_exc" value="exc" data-shortcut="x" title="Toggle lines excluded">0<span class="text"> excluded</span></button>
+            <button type="button" class="par run show_par button_toggle_par" value="par" data-shortcut="p" title="Toggle lines partially run">3<span class="text"> partial</span></button>
         </h2>
         <p class="text">
             <a id="prevFileLink" class="nav" href="z_145eef247bfb46b6_masks_py.html">&#xab; prev</a> &nbsp; &nbsp;
@@ -65,7 +67,7 @@
             <a id="nextFileLink" class="nav" href="z_145eef247bfb46b6_widget_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.13.4">coverage.py v7.13.4</a>,
-            created at 2026-03-09 22:20 +0300
+            created at 2026-03-16 20:35 +0300
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"></button>
@@ -91,7 +93,7 @@
     <p class="pln"><span class="n"><a id="t9" href="#t9">9</a></span><span class="t"><span class="str">       &#1060;&#1091;&#1085;&#1082;&#1094;&#1080;&#1103; &#1074;&#1086;&#1079;&#1074;&#1088;&#1072;&#1097;&#1072;&#1077;&#1090; &#1085;&#1086;&#1074;&#1099;&#1081; &#1089;&#1087;&#1080;&#1089;&#1086;&#1082; &#1089;&#1083;&#1086;&#1074;&#1072;&#1088;&#1077;&#1081;, &#1089;&#1086;&#1076;&#1077;&#1088;&#1078;&#1072;&#1097;&#1080;&#1081; &#1090;&#1086;&#1083;&#1100;&#1082;&#1086; &#1090;&#1077; &#1089;&#1083;&#1086;&#1074;&#1072;&#1088;&#1080;, &#1091; &#1082;&#1086;&#1090;&#1086;&#1088;&#1099;&#1093; &#1082;&#1083;&#1102;&#1095;</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t10" href="#t10">10</a></span><span class="t"><span class="str">    state &#1089;&#1086;&#1086;&#1090;&#1074;&#1077;&#1090;&#1089;&#1090;&#1074;&#1091;&#1077;&#1090; &#1091;&#1082;&#1072;&#1079;&#1072;&#1085;&#1085;&#1086;&#1084;&#1091; &#1079;&#1085;&#1072;&#1095;&#1077;&#1085;&#1080;&#1102;</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t11" href="#t11">11</a></span><span class="t"><span class="str">    """</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t12" href="#t12">12</a></span><span class="t">    <span class="key">if</span> <span class="key">not</span> <span class="nam">isinstance</span><span class="op">(</span><span class="nam">data</span><span class="op">,</span> <span class="nam">list</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="par run show_par"><span class="n"><a id="t12" href="#t12">12</a></span><span class="t">    <span class="key">if</span> <span class="key">not</span> <span class="nam">isinstance</span><span class="op">(</span><span class="nam">data</span><span class="op">,</span> <span class="nam">list</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"><span class="annotate short">12&#x202F;&#x219B;&#x202F;13</span><span class="annotate long">line 12 didn't jump to line 13 because the condition on line 12 was never true</span></span></p>
     <p class="mis show_mis"><span class="n"><a id="t13" href="#t13">13</a></span><span class="t">        <span class="key">raise</span> <span class="nam">TypeError</span><span class="op">(</span><span class="str">"&#1055;&#1072;&#1088;&#1072;&#1084;&#1077;&#1090;&#1088; 'data' &#1076;&#1086;&#1083;&#1078;&#1077;&#1085; &#1073;&#1099;&#1090;&#1100; &#1089;&#1087;&#1080;&#1089;&#1082;&#1086;&#1084;"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t14" href="#t14">14</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t15" href="#t15">15</a></span><span class="t">    <span class="key">return</span> <span class="op">[</span>&nbsp;</span><span class="r"></span></p>
@@ -105,7 +107,7 @@
     <p class="pln"><span class="n"><a id="t23" href="#t23">23</a></span><span class="t">    <span class="str">"""</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t24" href="#t24">24</a></span><span class="t"><span class="str">    &#1060;&#1091;&#1085;&#1082;&#1094;&#1080;&#1103; &#1076;&#1086;&#1083;&#1078;&#1085;&#1072; &#1074;&#1086;&#1079;&#1074;&#1088;&#1072;&#1097;&#1072;&#1090;&#1100; &#1085;&#1086;&#1074;&#1099;&#1081; &#1089;&#1087;&#1080;&#1089;&#1086;&#1082;, &#1086;&#1090;&#1089;&#1086;&#1088;&#1090;&#1080;&#1088;&#1086;&#1074;&#1072;&#1085;&#1085;&#1099;&#1081; &#1087;&#1086; &#1076;&#1072;&#1090;&#1077; (date)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t25" href="#t25">25</a></span><span class="t"><span class="str">    """</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t26" href="#t26">26</a></span><span class="t">    <span class="key">if</span> <span class="key">not</span> <span class="nam">isinstance</span><span class="op">(</span><span class="nam">data</span><span class="op">,</span> <span class="nam">list</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="par run show_par"><span class="n"><a id="t26" href="#t26">26</a></span><span class="t">    <span class="key">if</span> <span class="key">not</span> <span class="nam">isinstance</span><span class="op">(</span><span class="nam">data</span><span class="op">,</span> <span class="nam">list</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"><span class="annotate short">26&#x202F;&#x219B;&#x202F;27</span><span class="annotate long">line 26 didn't jump to line 27 because the condition on line 26 was never true</span></span></p>
     <p class="mis show_mis"><span class="n"><a id="t27" href="#t27">27</a></span><span class="t">        <span class="key">raise</span> <span class="nam">TypeError</span><span class="op">(</span><span class="str">"&#1055;&#1072;&#1088;&#1072;&#1084;&#1077;&#1090;&#1088; 'data' &#1076;&#1086;&#1083;&#1078;&#1077;&#1085; &#1073;&#1099;&#1090;&#1100; &#1089;&#1087;&#1080;&#1089;&#1082;&#1086;&#1084;"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t28" href="#t28">28</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t29" href="#t29">29</a></span><span class="t">    <span class="key">def</span> <span class="nam">parse_date</span><span class="op">(</span><span class="nam">item</span><span class="op">:</span> <span class="nam">Dict</span><span class="op">[</span><span class="nam">str</span><span class="op">,</span> <span class="nam">Any</span><span class="op">]</span><span class="op">)</span> <span class="op">-></span> <span class="nam">datetime</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
@@ -120,7 +122,7 @@
     <p class="pln"><span class="n"><a id="t38" href="#t38">38</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t39" href="#t39">39</a></span><span class="t">    <span class="com"># &#1055;&#1088;&#1086;&#1074;&#1077;&#1088;&#1103;&#1077;&#1084; &#1085;&#1072;&#1083;&#1080;&#1095;&#1080;&#1077; &#1082;&#1083;&#1102;&#1095;&#1072; 'date' &#1080; &#1087;&#1072;&#1088;&#1089;&#1080;&#1084; &#1076;&#1072;&#1090;&#1099;</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t40" href="#t40">40</a></span><span class="t">    <span class="key">for</span> <span class="nam">item</span> <span class="key">in</span> <span class="nam">data</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t41" href="#t41">41</a></span><span class="t">        <span class="key">if</span> <span class="str">"date"</span> <span class="key">not</span> <span class="key">in</span> <span class="nam">item</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="par run show_par"><span class="n"><a id="t41" href="#t41">41</a></span><span class="t">        <span class="key">if</span> <span class="str">"date"</span> <span class="key">not</span> <span class="key">in</span> <span class="nam">item</span><span class="op">:</span>&nbsp;</span><span class="r"><span class="annotate short">41&#x202F;&#x219B;&#x202F;42</span><span class="annotate long">line 41 didn't jump to line 42 because the condition on line 41 was never true</span></span></p>
     <p class="mis show_mis"><span class="n"><a id="t42" href="#t42">42</a></span><span class="t">            <span class="key">raise</span> <span class="nam">KeyError</span><span class="op">(</span><span class="fst">f"</span><span class="fst">&#1069;&#1083;&#1077;&#1084;&#1077;&#1085;&#1090; </span><span class="op">{</span><span class="nam">item</span><span class="op">}</span><span class="fst"> &#1085;&#1077; &#1089;&#1086;&#1076;&#1077;&#1088;&#1078;&#1080;&#1090; &#1082;&#1083;&#1102;&#1095;&#1072; 'date'</span><span class="fst">"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t43" href="#t43">43</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t44" href="#t44">44</a></span><span class="t">    <span class="key">return</span> <span class="nam">sorted</span><span class="op">(</span><span class="nam">data</span><span class="op">,</span> <span class="nam">key</span><span class="op">=</span><span class="nam">parse_date</span><span class="op">,</span> <span class="nam">reverse</span><span class="op">=</span><span class="nam">reverse</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
@@ -133,7 +135,7 @@
             <a class="nav" href="z_145eef247bfb46b6_widget_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.13.4">coverage.py v7.13.4</a>,
-            created at 2026-03-09 22:20 +0300
+            created at 2026-03-16 20:35 +0300
         </p>
     </div>
 </footer>
