@@ -11,7 +11,7 @@
 <header>
     <div class="content">
         <h1>Test Coverage Report:
-            <span class="pc_cov">82%</span>
+            <span class="pc_cov">89%</span>
         </h1>
         <aside id="help_panel_wrapper">
             <input id="help_panel_state" type="checkbox">
@@ -27,6 +27,8 @@
                         <kbd>s</kbd>
                         <kbd>m</kbd>
                         <kbd>x</kbd>
+                        <kbd>b</kbd>
+                        <kbd>p</kbd>
                         <kbd>c</kbd>
                         &nbsp; change column sorting
                     </p>
@@ -55,20 +57,35 @@
         </h2>
         <p class="text">
             <a class="nav" href="https://coverage.readthedocs.io/en/7.13.4">coverage.py v7.13.4</a>,
-            created at 2026-03-09 22:20 +0300
+            created at 2026-03-16 20:35 +0300
         </p>
     </div>
 </header>
 <main id="index">
     <table class="index" data-sortable>
         <thead>
+            <tr class="tablehead grouphead">
+                <th class="spacer">&nbsp;</th>
+                <th class="spacer">&nbsp;</th>
+                <th class="spacer">&nbsp;</th>
+                <th class="left" colspan="4">Statements</th>
+                <th class="spacer">&nbsp;</th>
+                <th class="left" colspan="3">Branches</th>
+                <th class="spacer">&nbsp;</th>
+                <th>Total</th>
+            </tr>
             <tr class="tablehead" title="Click to sort">
                 <th id="file" class="name" aria-sort="none" data-shortcut="f">File<span class="arrows"></span></th>
                 <th id="region" class="name" aria-sort="none" data-default-sort-order="ascending" data-shortcut="n">function<span class="arrows"></span></th>
                 <th class="spacer">&nbsp;</th>
+                <th id="statements_coverage" aria-sort="none" data-default-sort-order="descending">coverage<span class="arrows"></span></th>
                 <th id="statements" aria-sort="none" data-default-sort-order="descending" data-shortcut="s">statements<span class="arrows"></span></th>
                 <th id="missing" aria-sort="none" data-default-sort-order="descending" data-shortcut="m">missing<span class="arrows"></span></th>
                 <th id="excluded" aria-sort="none" data-default-sort-order="descending" data-shortcut="x">excluded<span class="arrows"></span></th>
+                <th class="spacer">&nbsp;</th>
+                <th id="branches_coverage" aria-sort="none" data-default-sort-order="descending">coverage<span class="arrows"></span></th>
+                <th id="branches" aria-sort="none" data-default-sort-order="descending" data-shortcut="b">branches<span class="arrows"></span></th>
+                <th id="partial" aria-sort="none" data-default-sort-order="descending" data-shortcut="p">partial<span class="arrows"></span></th>
                 <th class="spacer">&nbsp;</th>
                 <th id="coverage" aria-sort="none" data-shortcut="c">coverage<span class="arrows"></span></th>
             </tr>
@@ -78,77 +95,177 @@
                 <td class="name"><a href="z_145eef247bfb46b6___init___py.html">src&#8201;\&#8201;__init__.py</a></td>
                 <td class="name"><a href="z_145eef247bfb46b6___init___py.html"><data value=''><span class='no-noun'>(no function)</span></data></a></td>
                 <td class="spacer">&nbsp;</td>
+                <td data-ratio="0 0">100%</td>
                 <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="spacer">&nbsp;</td>
+                <td data-ratio="0 0">100%</td>
                 <td>0</td>
                 <td>0</td>
                 <td class="spacer">&nbsp;</td>
                 <td data-ratio="0 0">100%</td>
             </tr>
             <tr class="region">
+                <td class="name"><a href="z_145eef247bfb46b6_decorators_py.html#t5">src&#8201;\&#8201;decorators.py</a></td>
+                <td class="name"><a href="z_145eef247bfb46b6_decorators_py.html#t5"><data value='log'>log</data></a></td>
+                <td class="spacer">&nbsp;</td>
+                <td data-ratio="3 3">100%</td>
+                <td>3</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="spacer">&nbsp;</td>
+                <td data-ratio="0 0">100%</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="spacer">&nbsp;</td>
+                <td data-ratio="3 3">100%</td>
+            </tr>
+            <tr class="region">
+                <td class="name"><a href="z_145eef247bfb46b6_decorators_py.html#t8">src&#8201;\&#8201;decorators.py</a></td>
+                <td class="name"><a href="z_145eef247bfb46b6_decorators_py.html#t8"><data value='decorator'>log.decorator</data></a></td>
+                <td class="spacer">&nbsp;</td>
+                <td data-ratio="2 2">100%</td>
+                <td>2</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="spacer">&nbsp;</td>
+                <td data-ratio="0 0">100%</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="spacer">&nbsp;</td>
+                <td data-ratio="2 2">100%</td>
+            </tr>
+            <tr class="region">
+                <td class="name"><a href="z_145eef247bfb46b6_decorators_py.html#t10">src&#8201;\&#8201;decorators.py</a></td>
+                <td class="name"><a href="z_145eef247bfb46b6_decorators_py.html#t10"><data value='wrapper'>log.decorator.wrapper</data></a></td>
+                <td class="spacer">&nbsp;</td>
+                <td data-ratio="20 20">100%</td>
+                <td>20</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="spacer">&nbsp;</td>
+                <td data-ratio="2 2">100%</td>
+                <td>2</td>
+                <td>0</td>
+                <td class="spacer">&nbsp;</td>
+                <td data-ratio="22 22">100%</td>
+            </tr>
+            <tr class="region">
+                <td class="name"><a href="z_145eef247bfb46b6_decorators_py.html">src&#8201;\&#8201;decorators.py</a></td>
+                <td class="name"><a href="z_145eef247bfb46b6_decorators_py.html"><data value=''><span class='no-noun'>(no function)</span></data></a></td>
+                <td class="spacer">&nbsp;</td>
+                <td data-ratio="3 3">100%</td>
+                <td>3</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="spacer">&nbsp;</td>
+                <td data-ratio="0 0">100%</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="spacer">&nbsp;</td>
+                <td data-ratio="3 3">100%</td>
+            </tr>
+            <tr class="region">
                 <td class="name"><a href="z_145eef247bfb46b6_generators_py.html#t1">src&#8201;\&#8201;generators.py</a></td>
                 <td class="name"><a href="z_145eef247bfb46b6_generators_py.html#t1"><data value='filter_by_currency'>filter_by_currency</data></a></td>
                 <td class="spacer">&nbsp;</td>
+                <td data-ratio="3 3">100%</td>
                 <td>3</td>
                 <td>0</td>
                 <td>0</td>
                 <td class="spacer">&nbsp;</td>
-                <td data-ratio="3 3">100%</td>
-            </tr>
-            <tr class="region">
-                <td class="name"><a href="z_145eef247bfb46b6_generators_py.html#t16">src&#8201;\&#8201;generators.py</a></td>
-                <td class="name"><a href="z_145eef247bfb46b6_generators_py.html#t16"><data value='transaction_descriptions'>transaction_descriptions</data></a></td>
-                <td class="spacer">&nbsp;</td>
-                <td>3</td>
-                <td>0</td>
-                <td>0</td>
-                <td class="spacer">&nbsp;</td>
-                <td data-ratio="3 3">100%</td>
-            </tr>
-            <tr class="region">
-                <td class="name"><a href="z_145eef247bfb46b6_generators_py.html#t27">src&#8201;\&#8201;generators.py</a></td>
-                <td class="name"><a href="z_145eef247bfb46b6_generators_py.html#t27"><data value='card_number_generator'>card_number_generator</data></a></td>
-                <td class="spacer">&nbsp;</td>
-                <td>6</td>
+                <td data-ratio="4 4">100%</td>
                 <td>4</td>
-                <td>0</td>
-                <td class="spacer">&nbsp;</td>
-                <td data-ratio="2 6">33%</td>
-            </tr>
-            <tr class="region">
-                <td class="name"><a href="z_145eef247bfb46b6_generators_py.html">src&#8201;\&#8201;generators.py</a></td>
-                <td class="name"><a href="z_145eef247bfb46b6_generators_py.html"><data value=''><span class='no-noun'>(no function)</span></data></a></td>
-                <td class="spacer">&nbsp;</td>
-                <td>3</td>
-                <td>1</td>
-                <td>0</td>
-                <td class="spacer">&nbsp;</td>
-                <td data-ratio="2 3">67%</td>
-            </tr>
-            <tr class="region">
-                <td class="name"><a href="z_145eef247bfb46b6_masks_py.html#t1">src&#8201;\&#8201;masks.py</a></td>
-                <td class="name"><a href="z_145eef247bfb46b6_masks_py.html#t1"><data value='get_mask_card_number'>get_mask_card_number</data></a></td>
-                <td class="spacer">&nbsp;</td>
-                <td>7</td>
-                <td>0</td>
                 <td>0</td>
                 <td class="spacer">&nbsp;</td>
                 <td data-ratio="7 7">100%</td>
             </tr>
             <tr class="region">
-                <td class="name"><a href="z_145eef247bfb46b6_masks_py.html#t23">src&#8201;\&#8201;masks.py</a></td>
-                <td class="name"><a href="z_145eef247bfb46b6_masks_py.html#t23"><data value='get_mask_account'>get_mask_account</data></a></td>
+                <td class="name"><a href="z_145eef247bfb46b6_generators_py.html#t16">src&#8201;\&#8201;generators.py</a></td>
+                <td class="name"><a href="z_145eef247bfb46b6_generators_py.html#t16"><data value='transaction_descriptions'>transaction_descriptions</data></a></td>
                 <td class="spacer">&nbsp;</td>
-                <td>8</td>
+                <td data-ratio="3 3">100%</td>
+                <td>3</td>
                 <td>0</td>
+                <td>0</td>
+                <td class="spacer">&nbsp;</td>
+                <td data-ratio="4 4">100%</td>
+                <td>4</td>
+                <td>0</td>
+                <td class="spacer">&nbsp;</td>
+                <td data-ratio="7 7">100%</td>
+            </tr>
+            <tr class="region">
+                <td class="name"><a href="z_145eef247bfb46b6_generators_py.html#t27">src&#8201;\&#8201;generators.py</a></td>
+                <td class="name"><a href="z_145eef247bfb46b6_generators_py.html#t27"><data value='card_number_generator'>card_number_generator</data></a></td>
+                <td class="spacer">&nbsp;</td>
+                <td data-ratio="6 6">100%</td>
+                <td>6</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="spacer">&nbsp;</td>
+                <td data-ratio="2 2">100%</td>
+                <td>2</td>
                 <td>0</td>
                 <td class="spacer">&nbsp;</td>
                 <td data-ratio="8 8">100%</td>
             </tr>
             <tr class="region">
+                <td class="name"><a href="z_145eef247bfb46b6_generators_py.html">src&#8201;\&#8201;generators.py</a></td>
+                <td class="name"><a href="z_145eef247bfb46b6_generators_py.html"><data value=''><span class='no-noun'>(no function)</span></data></a></td>
+                <td class="spacer">&nbsp;</td>
+                <td data-ratio="3 3">100%</td>
+                <td>3</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="spacer">&nbsp;</td>
+                <td data-ratio="0 0">100%</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="spacer">&nbsp;</td>
+                <td data-ratio="3 3">100%</td>
+            </tr>
+            <tr class="region">
+                <td class="name"><a href="z_145eef247bfb46b6_masks_py.html#t1">src&#8201;\&#8201;masks.py</a></td>
+                <td class="name"><a href="z_145eef247bfb46b6_masks_py.html#t1"><data value='get_mask_card_number'>get_mask_card_number</data></a></td>
+                <td class="spacer">&nbsp;</td>
+                <td data-ratio="7 7">100%</td>
+                <td>7</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="spacer">&nbsp;</td>
+                <td data-ratio="4 4">100%</td>
+                <td>4</td>
+                <td>0</td>
+                <td class="spacer">&nbsp;</td>
+                <td data-ratio="11 11">100%</td>
+            </tr>
+            <tr class="region">
+                <td class="name"><a href="z_145eef247bfb46b6_masks_py.html#t23">src&#8201;\&#8201;masks.py</a></td>
+                <td class="name"><a href="z_145eef247bfb46b6_masks_py.html#t23"><data value='get_mask_account'>get_mask_account</data></a></td>
+                <td class="spacer">&nbsp;</td>
+                <td data-ratio="8 8">100%</td>
+                <td>8</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="spacer">&nbsp;</td>
+                <td data-ratio="4 4">100%</td>
+                <td>4</td>
+                <td>0</td>
+                <td class="spacer">&nbsp;</td>
+                <td data-ratio="12 12">100%</td>
+            </tr>
+            <tr class="region">
                 <td class="name"><a href="z_145eef247bfb46b6_masks_py.html">src&#8201;\&#8201;masks.py</a></td>
                 <td class="name"><a href="z_145eef247bfb46b6_masks_py.html"><data value=''><span class='no-noun'>(no function)</span></data></a></td>
                 <td class="spacer">&nbsp;</td>
+                <td data-ratio="2 2">100%</td>
                 <td>2</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="spacer">&nbsp;</td>
+                <td data-ratio="0 0">100%</td>
                 <td>0</td>
                 <td>0</td>
                 <td class="spacer">&nbsp;</td>
@@ -158,28 +275,43 @@
                 <td class="name"><a href="z_145eef247bfb46b6_processing_py.html#t5">src&#8201;\&#8201;processing.py</a></td>
                 <td class="name"><a href="z_145eef247bfb46b6_processing_py.html#t5"><data value='filter_by_state'>filter_by_state</data></a></td>
                 <td class="spacer">&nbsp;</td>
+                <td data-ratio="2 3">67%</td>
                 <td>3</td>
                 <td>1</td>
                 <td>0</td>
                 <td class="spacer">&nbsp;</td>
-                <td data-ratio="2 3">67%</td>
+                <td data-ratio="1 2">50%</td>
+                <td>2</td>
+                <td>1</td>
+                <td class="spacer">&nbsp;</td>
+                <td data-ratio="3 5">60%</td>
             </tr>
             <tr class="region">
                 <td class="name"><a href="z_145eef247bfb46b6_processing_py.html#t20">src&#8201;\&#8201;processing.py</a></td>
                 <td class="name"><a href="z_145eef247bfb46b6_processing_py.html#t20"><data value='sort_by_date'>sort_by_date</data></a></td>
                 <td class="spacer">&nbsp;</td>
+                <td data-ratio="5 7">71%</td>
                 <td>7</td>
                 <td>2</td>
                 <td>0</td>
                 <td class="spacer">&nbsp;</td>
-                <td data-ratio="5 7">71%</td>
+                <td data-ratio="4 6">67%</td>
+                <td>6</td>
+                <td>2</td>
+                <td class="spacer">&nbsp;</td>
+                <td data-ratio="9 13">69%</td>
             </tr>
             <tr class="region">
                 <td class="name"><a href="z_145eef247bfb46b6_processing_py.html#t29">src&#8201;\&#8201;processing.py</a></td>
                 <td class="name"><a href="z_145eef247bfb46b6_processing_py.html#t29"><data value='parse_date'>sort_by_date.parse_date</data></a></td>
                 <td class="spacer">&nbsp;</td>
+                <td data-ratio="3 5">60%</td>
                 <td>5</td>
                 <td>2</td>
+                <td>0</td>
+                <td class="spacer">&nbsp;</td>
+                <td data-ratio="0 0">100%</td>
+                <td>0</td>
                 <td>0</td>
                 <td class="spacer">&nbsp;</td>
                 <td data-ratio="3 5">60%</td>
@@ -188,7 +320,12 @@
                 <td class="name"><a href="z_145eef247bfb46b6_processing_py.html">src&#8201;\&#8201;processing.py</a></td>
                 <td class="name"><a href="z_145eef247bfb46b6_processing_py.html"><data value=''><span class='no-noun'>(no function)</span></data></a></td>
                 <td class="spacer">&nbsp;</td>
+                <td data-ratio="4 4">100%</td>
                 <td>4</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="spacer">&nbsp;</td>
+                <td data-ratio="0 0">100%</td>
                 <td>0</td>
                 <td>0</td>
                 <td class="spacer">&nbsp;</td>
@@ -198,17 +335,27 @@
                 <td class="name"><a href="z_145eef247bfb46b6_widget_py.html#t6">src&#8201;\&#8201;widget.py</a></td>
                 <td class="name"><a href="z_145eef247bfb46b6_widget_py.html#t6"><data value='mask_account_card'>mask_account_card</data></a></td>
                 <td class="spacer">&nbsp;</td>
+                <td data-ratio="11 15">73%</td>
                 <td>15</td>
                 <td>4</td>
                 <td>0</td>
                 <td class="spacer">&nbsp;</td>
-                <td data-ratio="11 15">73%</td>
+                <td data-ratio="4 8">50%</td>
+                <td>8</td>
+                <td>4</td>
+                <td class="spacer">&nbsp;</td>
+                <td data-ratio="15 23">65%</td>
             </tr>
             <tr class="region">
                 <td class="name"><a href="z_145eef247bfb46b6_widget_py.html#t38">src&#8201;\&#8201;widget.py</a></td>
                 <td class="name"><a href="z_145eef247bfb46b6_widget_py.html#t38"><data value='get_date'>get_date</data></a></td>
                 <td class="spacer">&nbsp;</td>
+                <td data-ratio="4 4">100%</td>
                 <td>4</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="spacer">&nbsp;</td>
+                <td data-ratio="0 0">100%</td>
                 <td>0</td>
                 <td>0</td>
                 <td class="spacer">&nbsp;</td>
@@ -218,7 +365,12 @@
                 <td class="name"><a href="z_145eef247bfb46b6_widget_py.html">src&#8201;\&#8201;widget.py</a></td>
                 <td class="name"><a href="z_145eef247bfb46b6_widget_py.html"><data value=''><span class='no-noun'>(no function)</span></data></a></td>
                 <td class="spacer">&nbsp;</td>
+                <td data-ratio="6 6">100%</td>
                 <td>6</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="spacer">&nbsp;</td>
+                <td data-ratio="0 0">100%</td>
                 <td>0</td>
                 <td>0</td>
                 <td class="spacer">&nbsp;</td>
@@ -230,11 +382,16 @@
                 <td class="name">Total</td>
                 <td class="name">&nbsp;</td>
                 <td class="spacer">&nbsp;</td>
-                <td>76</td>
-                <td>14</td>
+                <td data-ratio="95 104">91%</td>
+                <td>104</td>
+                <td>9</td>
                 <td>0</td>
                 <td class="spacer">&nbsp;</td>
-                <td data-ratio="62 76">82%</td>
+                <td data-ratio="29 36">81%</td>
+                <td>36</td>
+                <td>7</td>
+                <td class="spacer">&nbsp;</td>
+                <td data-ratio="124 140">89%</td>
             </tr>
         </tfoot>
     </table>
@@ -246,7 +403,7 @@
     <div class="content">
         <p>
             <a class="nav" href="https://coverage.readthedocs.io/en/7.13.4">coverage.py v7.13.4</a>,
-            created at 2026-03-09 22:20 +0300
+            created at 2026-03-16 20:35 +0300
         </p>
     </div>
     <aside class="hidden">
