@@ -1,2 +1,5 @@
-
+requests==2.32.5.0
+python-dotenv==1.0.0
+typing-extensions==4.9.0
 pytest
+utils
