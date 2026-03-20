@@ -1,3 +1,9 @@
+from src.logger_config import logger
+
+if __name__ == "__main__":
+    logger.info("Приложение запущено. Логирование инициализировано.")
+    print("Приложение запущено. Проверьте файл logs/app.log для логов.")
+
 # This is a sample Python script.
 
 # Press Shift+F10 to execute it or replace it with your code.
