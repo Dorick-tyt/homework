@@ -1,36 +1,45 @@
 import logging
-from pathlib import Path
+import os
+from logging.handlers import RotatingFileHandler
 
-def setup_logging():
+def setup_logger(name: str, log_file: str) -> logging.Logger:
     """
-    Настраивает логирование для всего проекта.
-    Создаёт папку logs, если её нет, и настраивает логеры для модулей.
+    Создаёт и настраивает логер с file_handler и форматированием.
+
+    Args:
+        name: имя логера (обычно __name__)
+        log_file: путь к файлу логов
+
+    Returns:
+        Настроенный объект Logger
     """
-    # Создаём папку logs в корне проекта
-    logs_dir = Path(__file__).parent.parent / "logs"
-    logs_dir.mkdir(exist_ok=True)
+    # Создаём логер
+    logger = logging.getLogger(name)
+    logger.setLevel(logging.DEBUG)  # Уровень не ниже DEBUG
 
-    # Формат логов: время, модуль, уровень, сообщение
-    log_format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-    formatter = logging.Formatter(log_format)
+    # Удаляем существующие обработчики, чтобы избежать дублирования
+    logger.handlers.clear()
 
-    # Обработчик для записи в файл (перезаписывает при каждом запуске)
-    file_handler = logging.FileHandler(
-        logs_dir / "app.log",
-        mode='w',  # перезапись при каждом запуске
+    # Создаём директорию для логов, если её нет
+    os.makedirs(os.path.dirname(log_file), exist_ok=True)
+
+    # Настраиваем file_handler с ротацией
+    file_handler = RotatingFileHandler(
+        log_file,
+        maxBytes=10 * 1024 * 1024,  # 10 МБ
+        backupCount=5,
         encoding='utf-8'
     )
-    file_handler.setFormatter(formatter)
+    file_handler.setLevel(logging.DEBUG)
 
-    # Настраиваем корневого логера
-    root_logger = logging.getLogger()
-    root_logger.setLevel(logging.INFO)
-    root_logger.addHandler(file_handler)
+    # Настраиваем formatter
+    file_formatter = logging.Formatter(
+        '%(asctime)s | %(name)s | %(levelname)s | %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S'
+    )
+    file_handler.setFormatter(file_formatter)
 
-    # Отключаем дублирование в консоль (если нужно)
-    root_logger.propagate = False
+    # Добавляем обработчик к логеру
+    logger.addHandler(file_handler)
 
-    return root_logger
-
-# Инициализируем логирование при импорте модуля
-logger = setup_logging()
+    return logger
