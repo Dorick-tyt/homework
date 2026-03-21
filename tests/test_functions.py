@@ -8,48 +8,61 @@ from src.utils import load_transactions
 
 class TestUtils(unittest.TestCase):
 
+    @patch("src.utils.logger")
     @patch("builtins.open", mock_open(read_data="[]"))
     @patch("os.path.exists")
-    def test_load_transactions_empty_list(self, mock_exists):
+    def test_load_transactions_empty_list(self, mock_exists, mock_logger):
         mock_exists.return_value = True
         result = load_transactions("data/operations.json")
         self.assertEqual(result, [])
+        mock_logger.debug.assert_called()
+        mock_logger.info.assert_called_with("Успешно загружено 0 транзакций из data/operations.json")
 
-    @patch("builtins.open", mock_open(read_data='{"not": "a list"}'))
+    @patch("src.utils.logger")
     @patch("os.path.exists")
-    def test_load_transactions_not_a_list(self, mock_exists):
-        mock_exists.return_value = True
-        result = load_transactions("data/operations.json")
-        self.assertEqual(result, [])
-
-    @patch("os.path.exists")
-    def test_load_transactions_file_not_found(self, mock_exists):
+    def test_load_transactions_file_not_found(self, mock_exists, mock_logger):
         mock_exists.return_value = False
         result = load_transactions("nonexistent.json")
         self.assertEqual(result, [])
+        mock_logger.error.assert_called_with("Файл не найден: nonexistent.json")
 
+    @patch("src.utils.logger")
+    @patch("builtins.open", mock_open(read_data='{"not": "a list"}'))
+    @patch("os.path.exists")
+    def test_load_transactions_not_a_list(self, mock_exists, mock_logger):
+        mock_exists.return_value = True
+        result = load_transactions("data/operations.json")
+        self.assertEqual(result, [])
+        mock_logger.error.assert_called_with("Данные в файле data/operations.json не являются списком")
+
+    @patch("src.utils.logger")
     @patch("builtins.open", mock_open(read_data=json.dumps([{"id": 1, "amount": 100}])))
     @patch("os.path.exists")
-    def test_load_transactions_valid_data(self, mock_exists):
+    def test_load_transactions_valid_data(self, mock_exists, mock_logger):
         mock_exists.return_value = True
         result = load_transactions("data/operations.json")
         expected = [{"id": 1, "amount": 100}]
         self.assertEqual(result, expected)
+        mock_logger.info.assert_called_with("Успешно загружено 1 транзакций из data/operations.json")
 
+    @patch("src.utils.logger")
     @patch("builtins.open", mock_open(read_data="invalid json"))
     @patch("os.path.exists")
-    def test_load_transactions_invalid_json(self, mock_exists):
+    def test_load_transactions_invalid_json(self, mock_exists, mock_logger):
         mock_exists.return_value = True
         result = load_transactions("invalid.json")
         self.assertEqual(result, [])
+        mock_logger.error.assert_called()
 
+    @patch("src.utils.logger")
     @patch("builtins.open")
     @patch("os.path.exists")
-    def test_load_transactions_io_error(self, mock_exists, mock_file_open):
+    def test_load_transactions_io_error(self, mock_exists, mock_file_open, mock_logger):
         mock_exists.return_value = True
         mock_file_open.side_effect = IOError("Permission denied")
         result = load_transactions("restricted.json")
         self.assertEqual(result, [])
+        mock_logger.error.assert_called()
 
 
 class TestExternalAPI(unittest.TestCase):
