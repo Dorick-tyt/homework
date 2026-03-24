@@ -1,7 +1,17 @@
 import logging
 import re
+from src.logger_config import setup_module_logger
 
-logger = logging.getLogger(__name__)
+logger = setup_module_logger("masks", "logs/masks.log")
+
+# Убедимся, что уровень логирования не меньше DEBUG
+logger.setLevel(logging.DEBUG)
+
+try:
+    logger.info("Логгер модуля masks успешно инициализирован")
+except Exception as setup_exc:
+    print(f"КРИТИЧЕСКАЯ ОШИБКА: Не удалось настроить логгер masks: {setup_exc}")
+    raise
 
 
 def mask_card_number(card_number: str) -> str:
