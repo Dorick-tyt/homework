@@ -2,44 +2,56 @@ import logging
 import os
 from logging.handlers import RotatingFileHandler
 
-def setup_logger(name: str, log_file: str) -> logging.Logger:
+def setup_module_logger(
+    module_name: str,
+    log_file: str,
+    level: int = logging.DEBUG
+) -> logging.Logger:
     """
-    Создаёт и настраивает логер с file_handler и форматированием.
-
-    Args:
-        name: имя логера (обычно __name__)
-        log_file: путь к файлу логов
-
-    Returns:
-        Настроенный объект Logger
+    Создаёт и настраивает отдельный логгер для конкретного модуля.
     """
-    # Создаём логер
-    logger = logging.getLogger(name)
-    logger.setLevel(logging.DEBUG)  # Уровень не ниже DEBUG
+    # Создаём директорию для логов с обработкой ошибок
+    log_dir = os.path.dirname(log_file)
+    try:
+        os.makedirs(log_dir, exist_ok=True)
+        logging.info(f"Директория {log_dir} создана или уже существует")
+    except PermissionError:
+        raise PermissionError(f"Нет прав на создание директории {log_dir}")
+    except Exception as exc:
+        raise RuntimeError(f"Ошибка создания директории {log_dir}: {exc}")
 
-    # Удаляем существующие обработчики, чтобы избежать дублирования
+    # Получаем логер (или создаём новый)
+    logger = logging.getLogger(module_name)
+
+    # Очищаем старые обработчики, чтобы избежать дублирования
     logger.handlers.clear()
 
-    # Создаём директорию для логов, если её нет
-    os.makedirs(os.path.dirname(log_file), exist_ok=True)
+    logger.setLevel(level)
 
-    # Настраиваем file_handler с ротацией
-    file_handler = RotatingFileHandler(
-        log_file,
-        maxBytes=10 * 1024 * 1024,  # 10 МБ
-        backupCount=5,
-        encoding='utf-8'
-    )
-    file_handler.setLevel(logging.DEBUG)
-
-    # Настраиваем formatter
-    file_formatter = logging.Formatter(
-        '%(asctime)s | %(name)s | %(levelname)s | %(message)s',
+    # Форматировщик
+    formatter = logging.Formatter(
+        '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
         datefmt='%Y-%m-%d %H:%M:%S'
     )
-    file_handler.setFormatter(file_formatter)
 
-    # Добавляем обработчик к логеру
-    logger.addHandler(file_handler)
+    # Обработчик для файла
+    try:
+        file_handler = RotatingFileHandler(
+            log_file,
+            maxBytes=10 * 1024 * 1024,  # 10 МБ
+            backupCount=5,
+            encoding='utf-8'  # Явная кодировка
+        )
+        file_handler.setLevel(level)
+        file_handler.setFormatter(formatter)
+        logger.addHandler(file_handler)
+    except PermissionError:
+        raise PermissionError(f"Нет прав на запись в файл {log_file}")
+    except Exception as exc:
+        raise RuntimeError(f"Ошибка создания обработчика для {log_file}: {exc}")
 
     return logger
+
+
+def logger_config():
+    return None
