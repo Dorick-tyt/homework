@@ -2,15 +2,31 @@ import json
 import logging
 import os
 
-from .logger_config import setup_module_logger
 
-logger = setup_module_logger("utils", "logs/utils.log", level=logging.DEBUG)
+def setup_logger():
+    log_file = "logs/utils.log"
+    log_dir = os.path.dirname(log_file)
 
-try:
-    logger.info("Логгер модуля utils успешно инициализирован")
-except Exception as setup_exc:
-    print(f"КРИТИЧЕСКАЯ ОШИБКА: Не удалось настроить логгер utils: {setup_exc}")
-    raise
+    try:
+        os.makedirs(log_dir, exist_ok=True)
+        logging.info(f"Создана директория для логов: {log_dir}")
+    except Exception as exc:
+        print(f"Ошибка создания директории: {exc}")
+        return None
+
+    local_logger = logging.getLogger("utils")
+    local_logger.setLevel(logging.DEBUG)
+
+    file_handler = logging.FileHandler(log_file, mode='a', encoding='utf-8')
+    file_handler.setLevel(logging.DEBUG)
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    file_handler.setFormatter(formatter)
+    local_logger.addHandler(file_handler)
+    return local_logger
+
+
+# Получаем логгер при первом вызове
+logger = setup_logger()
 
 
 def load_transactions(file_path: str) -> list:
