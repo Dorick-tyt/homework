@@ -51,7 +51,3 @@ def setup_module_logger(
         raise RuntimeError(f"Ошибка создания обработчика для {log_file}: {exc}")
 
     return logger
-
-
-def logger_config():
-    return None
