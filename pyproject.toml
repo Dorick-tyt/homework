@@ -37,11 +37,13 @@ warn_return_any = true
 exclude = ".venv"
 
 [tool.mypy]
-python_version = "3.8"
+python_version = "3.9"
 strict = true
 follow_imports = "silent"
 ignore_missing_imports = false
 disallow_untyped_defs = true
+warn_return_any = true
+warn_unused_configs = true
 
 [[tool.mypy.overrides]]
 module = "logger_config"
