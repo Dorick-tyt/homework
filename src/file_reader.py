@@ -1,11 +1,11 @@
 import pandas as pd
-from typing import Optional, Dict, Any
+from typing import Optional, List, Dict, Any
 import os
 
 
 def load_financial_transactions(
     file_path: str, **kwargs: Any
-) -> Optional[pd.DataFrame]:
+) -> Optional[List[Dict[str, Any]]]:
     """
     Функция для загрузки транзакций из CSV/XLSX.
 
@@ -29,29 +29,24 @@ def load_financial_transactions(
             }
             # Объединяем параметры, отдавая приоритет пользовательским
             csv_params = {**default_csv_params, **kwargs}
-            result = pd.read_csv(file_path, **csv_params)
-            # Явно проверяем и приводим тип
-            if isinstance(result, pd.DataFrame):
-                df = result
-                print(f"CSV загружен: {len(df)} записей")
-            else:
-                raise TypeError(f"Ожидался DataFrame, получено: {type(result)}")
+            df = pd.read_csv(file_path, **csv_params)
 
         elif file_path.lower().endswith((".xlsx", ".xls")):
             default_excel_params: Dict[str, Any] = {"sheet_name": 0}
             excel_params = {**default_excel_params, **kwargs}
-            result = pd.read_excel(file_path, **excel_params)
-            # Явно проверяем и приводим тип
-            if isinstance(result, pd.DataFrame):
-                df = result
-                print(f"Excel загружен: {len(df)} записей")
-            else:
-                raise TypeError(f"Ожидался DataFrame, получено: {type(result)}")
+            df = pd.read_excel(file_path, **excel_params)
         else:
             raise ValueError(
                 "Формат файла не поддерживается. Используйте CSV или XLSX."
             )
-        return df
+        result: List[Dict[str, Any]] = [
+            {str(k): v for k, v in row.items()} for row in df.to_dict("records")
+        ]
+        print(
+            f"{'CSV' if file_path.lower().endswith('.csv') else 'Excel'} загружен: {len(result)} записей"
+        )
+        return result
+
     except Exception as e:
         print(f"Ошибка загрузки {file_path}: {e}")
         return None
@@ -64,8 +59,10 @@ xlsx_data = load_financial_transactions("transactions_excel.xlsx")
 # Проверка результатов
 if csv_data is not None:
     print("\nПервые строки CSV:")
-    print(csv_data.head())
+    for transaction in csv_data[:3]:
+        print(transaction)
 
 if xlsx_data is not None:
     print("\nПервые строки XLSX:")
-    print(xlsx_data.head())
+    for transaction in xlsx_data[:3]:
+        print(transaction)
