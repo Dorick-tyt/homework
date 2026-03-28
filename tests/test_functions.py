@@ -16,7 +16,9 @@ class TestUtils(unittest.TestCase):
         result = load_transactions("data/operations.json")
         self.assertEqual(result, [])
         mock_logger.debug.assert_called()
-        mock_logger.info.assert_called_with("Успешно загружено 0 транзакций из data/operations.json")
+        mock_logger.info.assert_called_with(
+            "Успешно загружено 0 транзакций из data/operations.json"
+        )
 
     @patch("src.utils.logger")
     @patch("os.path.exists")
@@ -33,7 +35,9 @@ class TestUtils(unittest.TestCase):
         mock_exists.return_value = True
         result = load_transactions("data/operations.json")
         self.assertEqual(result, [])
-        mock_logger.error.assert_called_with("Данные в файле data/operations.json не являются списком")
+        mock_logger.error.assert_called_with(
+            "Данные в файле data/operations.json не являются списком"
+        )
 
     @patch("src.utils.logger")
     @patch("builtins.open", mock_open(read_data=json.dumps([{"id": 1, "amount": 100}])))
@@ -43,7 +47,9 @@ class TestUtils(unittest.TestCase):
         result = load_transactions("data/operations.json")
         expected = [{"id": 1, "amount": 100}]
         self.assertEqual(result, expected)
-        mock_logger.info.assert_called_with("Успешно загружено 1 транзакций из data/operations.json")
+        mock_logger.info.assert_called_with(
+            "Успешно загружено 1 транзакций из data/operations.json"
+        )
 
     @patch("src.utils.logger")
     @patch("builtins.open", mock_open(read_data="invalid json"))

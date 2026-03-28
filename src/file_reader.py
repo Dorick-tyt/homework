@@ -1,68 +1,73 @@
-import pandas as pd
-from typing import Optional, List, Dict, Any
+import csv
 import os
+from typing import Any, Dict, List, Optional
+
+import pandas as pd
 
 
-def load_financial_transactions(
+def load_csv_transactions(
     file_path: str, **kwargs: Any
 ) -> Optional[List[Dict[str, Any]]]:
     """
-    Функция для загрузки транзакций из CSV/XLSX.
+    Функция для загрузки финансовых операций из CSV‑файла.
 
     Args:
-        file_path: путь к файлу с транзакциями
-        **kwargs: дополнительные параметры для pd.read_csv()/pd.read_excel()
+        file_path: путь к CSV‑файлу с транзакциями
+        **kwargs: дополнительные параметры для csv.DictReader или pd.read_csv()
 
     Returns:
-        DataFrame с данными или None при ошибке
+        Список словарей с транзакциями или None при ошибке
     """
     try:
         if not os.path.exists(file_path):
             raise FileNotFoundError(f"Файл не найден: {file_path}")
 
-        if file_path.lower().endswith(".csv"):
-            default_csv_params: Dict[str, Any] = {
-                "sep": ",",
-                "encoding": "utf-8",
-                "header": 0,
-                "skip_blank_lines": True,
+        # Используем csv.reader для большей гибкости
+        with open(file_path, "r", encoding=kwargs.get("encoding", "utf-8")) as f:
+            csv_params = {
+                "delimiter": kwargs.get("delimiter", ","),
+                "quotechar": kwargs.get("quotechar", '"'),
             }
-            # Объединяем параметры, отдавая приоритет пользовательским
-            csv_params = {**default_csv_params, **kwargs}
-            df = pd.read_csv(file_path, **csv_params)
-
-        elif file_path.lower().endswith((".xlsx", ".xls")):
-            default_excel_params: Dict[str, Any] = {"sheet_name": 0}
-            excel_params = {**default_excel_params, **kwargs}
-            df = pd.read_excel(file_path, **excel_params)
-        else:
-            raise ValueError(
-                "Формат файла не поддерживается. Используйте CSV или XLSX."
-            )
-        result: List[Dict[str, Any]] = [
-            {str(k): v for k, v in row.items()} for row in df.to_dict("records")
-        ]
-        print(
-            f"{'CSV' if file_path.lower().endswith('.csv') else 'Excel'} загружен: {len(result)} записей"
-        )
+            reader = csv.DictReader(f, **csv_params)
+            result: List[Dict[str, Any]] = []
+            for row in reader:
+                # Приводим ключи к строкам (на всякий случай)
+                cleaned_row = {str(k): v for k, v in row.items()}
+                result.append(cleaned_row)
+        print(f"CSV загружен: {len(result)} записей")
         return result
 
     except Exception as e:
-        print(f"Ошибка загрузки {file_path}: {e}")
+        print(f"Ошибка загрузки CSV {file_path}: {e}")
         return None
 
 
-# Загрузка файлов
-csv_data = load_financial_transactions("transactions.csv")
-xlsx_data = load_financial_transactions("transactions_excel.xlsx")
+def load_excel_transactions(
+    file_path: str, **kwargs: Any
+) -> Optional[List[Dict[str, Any]]]:
+    """
+    Функция для загрузки финансовых операций из Excel‑файла (XLSX/XLS).
 
-# Проверка результатов
-if csv_data is not None:
-    print("\nПервые строки CSV:")
-    for transaction in csv_data[:3]:
-        print(transaction)
+    Args:
+        file_path: путь к Excel‑файлу с транзакциями
+        **kwargs: дополнительные параметры для pd.read_excel()
 
-if xlsx_data is not None:
-    print("\nПервые строки XLSX:")
-    for transaction in xlsx_data[:3]:
-        print(transaction)
+    Returns:
+        Список словарей с транзакциями или None при ошибке
+    """
+    try:
+        if not os.path.exists(file_path):
+            raise FileNotFoundError(f"Файл не найден: {file_path}")
+
+        default_excel_params: Dict[str, Any] = {"sheet_name": 0}
+        excel_params = {**default_excel_params, **kwargs}
+        df = pd.read_excel(file_path, **excel_params)
+        result: List[Dict[str, Any]] = [
+            {str(k): v for k, v in row.items()} for row in df.to_dict("records")
+        ]
+        print(f"Excel загружен: {len(result)} записей")
+        return result
+
+    except Exception as e:
+        print(f"Ошибка загрузки Excel {file_path}: {e}")
+        return None

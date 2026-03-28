@@ -1,6 +1,6 @@
 import re
 
-from src.masks import get_mask_account, get_mask_card_number
+from src.masks import mask_account_number, mask_card_number
 
 
 def mask_account_card(card_number: str) -> str | None:
@@ -21,12 +21,12 @@ def mask_account_card(card_number: str) -> str | None:
     is_account = any(keyword in type_part.lower() for keyword in ["счёт", "account"])
 
     if is_account:
-        masked_number = get_mask_account(full_number)
+        masked_number = mask_account_number(full_number)
     else:
-        masked_number = get_mask_card_number(full_number)
+        masked_number = mask_card_number(full_number)
 
     # Проверка на ошибку (возвращается строка с ValueError)
-    if isinstance(masked_number, str) and masked_number.startswith("ValueError"):
+    if "должен содержать" in masked_number:
         return None
 
     return f"{type_part} {masked_number}"
@@ -48,6 +48,3 @@ def get_date(date_format: str) -> str:
     )
 
     return formated_date
-
-
-print(get_date("2024-03-11T02:26:18.671407"))

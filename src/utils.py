@@ -17,9 +17,11 @@ def setup_logger():
     local_logger = logging.getLogger("utils")
     local_logger.setLevel(logging.DEBUG)
 
-    file_handler = logging.FileHandler(log_file, mode='a', encoding='utf-8')
+    file_handler = logging.FileHandler(log_file, mode="a", encoding="utf-8")
     file_handler.setLevel(logging.DEBUG)
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    formatter = logging.Formatter(
+        "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    )
     file_handler.setFormatter(formatter)
     local_logger.addHandler(file_handler)
     return local_logger

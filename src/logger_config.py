@@ -2,10 +2,9 @@ import logging
 import os
 from logging.handlers import RotatingFileHandler
 
+
 def setup_module_logger(
-    module_name: str,
-    log_file: str,
-    level: int = logging.DEBUG
+    module_name: str, log_file: str, level: int = logging.DEBUG
 ) -> logging.Logger:
     """
     Создаёт и настраивает отдельный логгер для конкретного модуля.
@@ -30,8 +29,8 @@ def setup_module_logger(
 
     # Форматировщик
     formatter = logging.Formatter(
-        '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-        datefmt='%Y-%m-%d %H:%M:%S'
+        "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S",
     )
 
     # Обработчик для файла
@@ -40,7 +39,7 @@ def setup_module_logger(
             log_file,
             maxBytes=10 * 1024 * 1024,  # 10 МБ
             backupCount=5,
-            encoding='utf-8'  # Явная кодировка
+            encoding="utf-8",  # Явная кодировка
         )
         file_handler.setLevel(level)
         file_handler.setFormatter(formatter)
