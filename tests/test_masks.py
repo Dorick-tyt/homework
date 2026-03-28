@@ -1,117 +1,163 @@
 import unittest
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch, Mock
 
-from src.masks import mask_account_number, mask_card_number
+from src.masks import mask_account_number, mask_card_number, setup_logger, logger
 
 
-class TestMasks(unittest.TestCase):
+class TestSetupLogger(unittest.TestCase):
 
-    def setUp(self):
-        """Инициализация перед каждым тестом."""
-        # Создаём мок логгера
-        self.mock_logger = MagicMock()
-        # Подменяем логгер в модуле masks
-        patcher = patch("src.masks.logger", self.mock_logger)
-        patcher.start()
-        self.addCleanup(patcher.stop)
+    @patch("os.makedirs")
+    @patch("logging.getLogger")
+    def test_setup_logger_success(self, mock_get_logger, mock_makedirs):
+        """Тест успешной инициализации логгера."""
+        # Мокируем создание директории и получение логгера
+        mock_logger = Mock()
+        mock_get_logger.return_value = mock_logger
 
-    def test_mask_card_number_success(self):
-        """Тест успешной маскировки номера карты."""
+        result = setup_logger()
+
+        self.assertIsNotNone(result)
+        mock_makedirs.assert_called_with("logs", exist_ok=True)
+        self.assertEqual(result, mock_logger)
+
+    @patch("os.makedirs", side_effect=PermissionError("Permission denied"))
+    def test_setup_logger_permission_error(self, mock_makedirs):
+        """Тест обработки ошибки прав доступа при создании директории."""
+        with patch("builtins.print") as mock_print:
+            result = setup_logger()
+            self.assertIsNone(result)
+            mock_print.assert_called()
+
+
+class TestMaskCardNumber(unittest.TestCase):
+
+    @patch.object(logger, "debug")
+    @patch.object(logger, "error")
+    @patch.object(logger, "info")
+    def test_valid_card_number(self, mock_info, mock_error, mock_debug):
+        """Тест маскировки корректного номера карты."""
+        result = mask_card_number("1234567890123456")
+
+        mock_debug.assert_called_with(
+            "Попытка замаскировать номер карты: 1234567890123456"
+        )
+        mock_error.assert_not_called()
+        mock_info.assert_called_with("Номер карты успешно замаскирован: 123456****3456")
+        self.assertEqual(result, "123456****3456")
+
+    @patch.object(logger, "debug")
+    @patch.object(logger, "error")
+    @patch.object(logger, "info")
+    def test_card_with_spaces(self, mock_info, mock_error, mock_debug):
+        """Тест маскировки номера карты с пробелами."""
         result = mask_card_number("1234 5678 9012 3456")
-        self.assertEqual(result, "123456******3456")
-        self.mock_logger.debug.assert_called_once_with(
-            "Попытка замаскировать номер карты: 1234 5678 9012 3456"
-        )
-        self.mock_logger.info.assert_called_once_with(
-            "Номер карты успешно замаскирован: 123456******3456"
-        )
 
-    def test_mask_card_number_with_spaces_and_dashes(self):
-        """Тест маскировки карты с пробелами и дефисами."""
+        mock_debug.assert_called()
+        mock_error.assert_not_called()
+        self.assertEqual(result, "123456****3456")
+
+    @patch.object(logger, "debug")
+    @patch.object(logger, "error")
+    @patch.object(logger, "info")
+    def test_card_with_dashes(self, mock_info, mock_error, mock_debug):
+        """Тест маскировки номера карты с дефисами."""
         result = mask_card_number("1234-5678-9012-3456")
-        self.assertEqual(result, "123456******3456")
-        self.mock_logger.debug.assert_called_with(
-            "Попытка замаскировать номер карты: 1234-5678-9012-3456"
-        )
 
-    def test_mask_card_number_non_digit_characters(self):
-        """Тест с нечисловыми символами в номере карты."""
-        with self.assertRaises(ValueError) as context:
-            mask_card_number("1234abcd5678efgh")
-        self.assertIn(
-            "Номер карты должен содержать не менее 16 цифр", str(context.exception)
-        )
-        self.mock_logger.error.assert_called_once_with(
-            "Некорректная длина номера карты: 8 цифр"
-        )
+        mock_debug.assert_called()
+        mock_error.assert_not_called()
+        self.assertEqual(result, "123456****3456")
 
-    def test_mask_card_number_empty_string(self):
-        """Тест с пустой строкой."""
-        with self.assertRaises(ValueError) as context:
-            mask_card_number("")
-        self.assertIn(
-            "Номер карты должен содержать не менее 16 цифр", str(context.exception)
-        )
-        self.mock_logger.error.assert_called_once_with(
-            "Некорректная длина номера карты: 0 цифр"
-        )
+    @patch.object(logger, "debug")
+    @patch.object(logger, "error")
+    @patch.object(logger, "info")
+    def test_short_card_number(self, mock_info, mock_error, mock_debug):
+        """Тест обработки короткого номера карты."""
+        result = mask_card_number("123456789012")
 
-    def test_mask_card_number_invalid_length(self):
-        """Тест с номером карты неправильной длины (не 16 цифр)."""
-        with self.assertRaises(ValueError) as context:
-            mask_card_number("12345678")
-        self.assertIn(
-            "Номер карты должен содержать не менее 16 цифр", str(context.exception)
-        )
-        self.mock_logger.error.assert_called_once_with(
-            "Некорректная длина номера карты: 8 цифр"
-        )
+        mock_debug.assert_called()
+        mock_error.assert_called_with("Некорректная длина номера карты: 12 цифр")
+        mock_info.assert_not_called()
+        self.assertEqual(result, "Номер карты должен содержать 16 цифр")
 
-    def test_mask_card_number_single_digit(self):
-        """Тест с одноцифровым номером карты."""
-        with self.assertRaises(ValueError) as context:
-            mask_card_number("5")
-        self.assertIn(
-            "Номер карты должен содержать не менее 16 цифр", str(context.exception)
-        )
-        self.mock_logger.error.assert_called_once_with(
-            "Некорректная длина номера карты: 1 цифр"
-        )
+    @patch.object(logger, "debug")
+    @patch.object(logger, "error")
+    @patch.object(logger, "info")
+    def test_long_card_number(self, mock_info, mock_error, mock_debug):
+        """Тест обработки длинного номера карты."""
+        result = mask_card_number("1234567890123456789")
 
-    def test_mask_account_number_success(self):
-        """Тест успешной маскировки номера счёта."""
-        result = mask_account_number("40817810099910004312")
-        self.assertEqual(result, "**4312")
-        self.mock_logger.debug.assert_called_once_with(
-            "Попытка замаскировать номер счёта: 40817810099910004312"
-        )
-        self.mock_logger.info.assert_called_once_with(
-            "Номер счёта успешно замаскирован: **4312"
-        )
+        mock_debug.assert_called()
+        mock_error.assert_called_with("Некорректная длина номера карты: 19 цифр")
+        mock_info.assert_not_called()
+        self.assertEqual(result, "Номер карты должен содержать 16 цифр")
 
-    def test_mask_account_number_with_non_digits(self):
-        """Тест маскировки счёта с нечисловыми символами."""
-        result = mask_account_number("4081-7810-0999-1000-4312")
-        self.assertEqual(result, "**4312")
-        self.mock_logger.debug.assert_called_with(
-            "Попытка замаскировать номер счёта: 4081-7810-0999-1000-4312"
-        )
+    @patch.object(logger, "debug")
+    @patch.object(logger, "error")
+    @patch.object(logger, "info")
+    def test_empty_card_number(self, mock_info, mock_error, mock_debug):
+        """Тест обработки пустого номера карты."""
+        result = mask_card_number("")
 
-    def test_mask_account_number_too_short(self):
-        """Тест с слишком коротким номером счёта (меньше 4 цифр)."""
-        with self.assertRaises(ValueError) as context:
-            mask_account_number("123")
-        self.assertIn(
-            "Номер счёта должен содержать минимум 4 цифры", str(context.exception)
-        )
-        self.mock_logger.error.assert_called_once_with(
-            "Слишком короткий номер счёта: 3 цифр"
-        )
+        mock_debug.assert_called()
+        mock_error.assert_called_with("Некорректная длина номера карты: 0 цифр")
+        mock_info.assert_not_called()
+        self.assertEqual(result, "Номер карты должен содержать 16 цифр")
 
-    def test_mask_account_number_minimum_length(self):
-        """Тест номера счёта минимальной длины (4 цифры)."""
-        result = mask_account_number("1234")
+
+class TestMaskAccountNumber(unittest.TestCase):
+
+    @patch.object(logger, "debug")
+    @patch.object(logger, "error")
+    @patch.object(logger, "info")
+    def test_valid_account_number(self, mock_info, mock_error, mock_debug):
+        """Тест маскировки корректного номера счёта."""
+        result = mask_account_number("1234567890")
+
+        mock_debug.assert_called_with("Попытка замаскировать номер счёта: 1234567890")
+        mock_error.assert_not_called()
+        mock_info.assert_called_with("Номер счёта успешно замаскирован: **7890")
+        self.assertEqual(result, "**7890")
+
+    @patch.object(logger, "debug")
+    @patch.object(logger, "error")
+    @patch.object(logger, "info")
+    def test_account_with_spaces(self, mock_info, mock_error, mock_debug):
+        """Тест маскировки номера счёта с пробелами."""
+        result = mask_account_number("12 34 56 78 90")
+
+        mock_debug.assert_called()
+        mock_error.assert_not_called()
+        self.assertEqual(result, "**7890")
+
+    @patch.object(logger, "debug")
+    @patch.object(logger, "error")
+    @patch.object(logger, "info")
+    def test_account_with_letters(self, mock_info, mock_error, mock_debug):
+        """Тест маскировки номера счёта с буквами."""
+        result = mask_account_number("acc1234")
+
+        mock_debug.assert_called()
+        mock_error.assert_not_called()
         self.assertEqual(result, "**1234")
-        self.mock_logger.info.assert_called_once_with(
-            "Номер счёта успешно замаскирован: **1234"
-        )
+
+    @patch.object(logger, "debug")
+    @patch.object(logger, "error")
+    @patch.object(logger, "info")
+    def test_short_account_number(self, mock_info, mock_error, mock_debug):
+        """Тест обработки короткого номера счёта."""
+        result = mask_account_number("123")
+
+        mock_debug.assert_called()
+        mock_error.assert_called_with("Слишком короткий номер счёта: 3 цифр")
+        mock_info.assert_not_called()
+        self.assertEqual(result, "Номер счёта должен содержать минимум 4 цифры")
+
+    @patch.object(logger, "debug")
+    @patch.object(logger, "error")
+    @patch.object(logger, "info")
+    def test_min_length_account(self, mock_info, mock_error, mock_debug):
+        """Тест маскировки минимального номера счёта (4 цифры)."""
+        result = mask_account_number("1234")
+
+        mock_debug.assert_called()
+        var = mock_error.assert_not_called

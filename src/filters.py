@@ -1,6 +1,8 @@
 import re
 from collections import Counter
-from typing import Any, Dict, List, Counter as CounterType
+from typing import Any
+from typing import Counter as CounterType
+from typing import Dict, List
 
 
 def process_bank_search(

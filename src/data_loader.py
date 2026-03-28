@@ -43,8 +43,7 @@ def load_financial_transactions(
             csv_params = {**default_csv_params, **kwargs}
             df = pd.read_csv(file_path, **csv_params)
             result = [
-                {str(k): v for k, v in row.items()}
-                for row in df.to_dict("records")
+                {str(k): v for k, v in row.items()} for row in df.to_dict("records")
             ]
             print(f"CSV загружен: {len(result)} записей")
 
@@ -54,8 +53,7 @@ def load_financial_transactions(
             excel_params = {**default_excel_params, **kwargs}
             df = pd.read_excel(file_path, **excel_params)
             result = [
-                {str(k): v for k, v in row.items()}
-                for row in df.to_dict("records")
+                {str(k): v for k, v in row.items()} for row in df.to_dict("records")
             ]
             print(f"Excel загружен: {len(result)} записей")
         else:

@@ -1,9 +1,8 @@
 import json
 import re
-from datetime import datetime
 from collections import Counter
+from datetime import datetime
 from typing import Any, Dict, List, Optional
-
 
 # Доступные статусы операций
 AVAILABLE_STATUSES = ["EXECUTED", "CANCELED", "PENDING"]
@@ -40,7 +39,9 @@ def filter_by_status(
     return filtered
 
 
-def sort_by_date(data: list[Dict[str, Any]], ascending: bool = True) -> list[Dict[str, Any]]:
+def sort_by_date(
+    data: list[Dict[str, Any]], ascending: bool = True
+) -> list[Dict[str, Any]]:
     """Сортирует транзакции по дате"""
 
     def parse_date(input_date_str: str) -> Optional[datetime]:
@@ -51,7 +52,7 @@ def sort_by_date(data: list[Dict[str, Any]], ascending: bool = True) -> list[Dic
                 except ValueError:
                     continue
             return None
-        except (TypeError, ValueError):
+        except TypeError, ValueError:
             return None
 
     valid_dates: List[tuple[datetime, Dict[str, Any]]] = []
@@ -90,30 +91,30 @@ def filter_ruble_transactions(data: list[Dict[str, Any]]) -> list[Dict[str, Any]
 
 def format_transaction(transaction: dict[str, Any]) -> str:
     """Форматирует транзакцию для вывода в консоль"""
-    date_str = transaction.get('date', 'N/A')
-    description = transaction.get('description', 'N/A')
-    amount = transaction.get('amount', 'N/A')
-    currency = transaction.get('currency', 'N/A')
+    date_str = transaction.get("date", "N/A")
+    description = transaction.get("description", "N/A")
+    amount = transaction.get("amount", "N/A")
+    currency = transaction.get("currency", "N/A")
 
     # Извлекаем дату в формате ДД.ММ.ГГГГ
     try:
-        date_part = date_str.split('T')[0]
-        parsed_date = datetime.strptime(date_part, '%Y-%m-%d')
-        formatted_date = parsed_date.strftime('%d.%m.%Y')
-    except (TypeError, ValueError):
+        date_part = date_str.split("T")[0]
+        parsed_date = datetime.strptime(date_part, "%Y-%m-%d")
+        formatted_date = parsed_date.strftime("%d.%m.%Y")
+    except TypeError, ValueError:
         formatted_date = date_str
 
     return f"{formatted_date} {description}\nСумма: {amount} {currency}"
 
+
 def count_transactions_by_categories(
-    transactions: List[Dict[str, Any]],
-    categories: List[str]
+    transactions: List[Dict[str, Any]], categories: List[str]
 ) -> Dict[str, int]:
     """Подсчитывает количество транзакций по заданным категориям"""
     category_counter = Counter({category: 0 for category in categories})
 
     for transaction in transactions:
-        description = transaction.get('description', '').lower()
+        description = transaction.get("description", "").lower()
 
         for category in categories:
             pattern = re.compile(category, re.IGNORECASE)
@@ -123,24 +124,30 @@ def count_transactions_by_categories(
 
     return dict(category_counter)
 
+
 def search_transactions_by_description(
     transactions: List[Dict[str, Any]],
-    search_string: str  # Исправлено: было searchstring
+    search_string: str,  # Исправлено: было searchstring
 ) -> List[Dict[str, Any]]:
     """Ищет транзакции по строке в описании с использованием регулярных выражений"""
-    pattern = re.compile(search_string, re.IGNORECASE)  # Исправлено: search_string вместо searchstring
+    pattern = re.compile(
+        search_string, re.IGNORECASE
+    )  # Исправлено: search_string вместо searchstring
     result = []
 
     for transaction in transactions:
-        description = transaction.get('description', '')
+        description = transaction.get("description", "")
         if pattern.search(description):
             result.append(transaction)
 
     return result
 
+
 def main() -> None:
     """Основная функция программы с расширенной функциональностью"""
-    print("Программа: Привет! Добро пожаловать в программу работы с банковскими транзакциями.")
+    print(
+        "Программа: Привет! Добро пожаловать в программу работы с банковскими транзакциями."
+    )
     data = []  # Инициализируем данные
 
     while True:
@@ -156,11 +163,11 @@ def main() -> None:
 
         choice = input("Пользователь: ").strip()
 
-        if choice == '8':
+        if choice == "8":
             print("Программа: До свидания!")
             break
 
-        elif choice == '1':
+        elif choice == "1":
             file_path = input("Программа: Введите путь к JSON‑файлу: ").strip()
             data = load_json_data(file_path)
             if data:
@@ -168,64 +175,79 @@ def main() -> None:
             else:
                 print("Программа: Не удалось загрузить данные")
 
-
-        elif choice == '2':
+        elif choice == "2":
             if not data:
                 print("Программа: Сначала загрузите данные")
                 continue
-            search_term = input("Программа: Введите строку для поиска (можно использовать регулярные выражения): ").strip()
+            search_term = input(
+                "Программа: Введите строку для поиска (можно использовать регулярные выражения): "
+            ).strip()
             results = search_transactions_by_description(data, search_term)
             print(f"Программа: Найдено {len(results)} транзакций:")
             for transaction in results:
                 print(format_transaction(transaction))
                 print("-" * 40)
 
-        elif choice == '3':
+        elif choice == "3":
             if not data:
                 print("Программа: Сначала загрузите данные")
                 continue
             categories_input = input(
                 "Программа: Введите категории через запятую (например: продукты, кафе, транспорт): "
             ).strip()
-            categories = [cat.strip() for cat in categories_input.split(',')]
+            categories = [cat.strip() for cat in categories_input.split(",")]
             counts = count_transactions_by_categories(data, categories)
             print("Программа: Результаты подсчёта:")
             for category, count in counts.items():
                 print(f"{category}: {count} операций")
 
-        elif choice == '4':
+        elif choice == "4":
             if not data:
                 print("Программа: Сначала загрузите данные")
                 continue
             while True:
-                print(f"Программа: Введите статус, по которому необходимо выполнить фильтрацию.")
-                print(f"Доступные для фильтровки статусы: {', '.join(AVAILABLE_STATUSES)}")
-                user_status = input("Пользователь: ").strip()  # Переименована переменная
+                print(
+                    f"Программа: Введите статус, по которому необходимо выполнить фильтрацию."
+                )
+                print(
+                    f"Доступные для фильтровки статусы: {', '.join(AVAILABLE_STATUSES)}"
+                )
+                user_status = input(
+                    "Пользователь: "
+                ).strip()  # Переименована переменная
                 filtered_data = filter_by_status(data, user_status)
                 if filtered_data is None:
-                    print(f"Программа: Статус операции \"{user_status}\" недоступен.")
+                    print(f'Программа: Статус операции "{user_status}" недоступен.')
                 else:
                     data = filtered_data
-                    print(f"Программа: Операции отфильтрованы по статусу \"{user_status.upper()}\"")
+                    print(
+                        f'Программа: Операции отфильтрованы по статусу "{user_status.upper()}"'
+                    )
                     break
 
-        elif choice == '5':
+        elif choice == "5":
             if not data:
                 print("Программа: Сначала загрузите данные")
                 continue
-            order = input("Программа: Отсортировать по возрастанию или по убыванию?\nПользователь: ").strip().lower()
-            ascending = 'возрастанию' in order
+            order = (
+                input(
+                    "Программа: Отсортировать по возрастанию или по убыванию?\nПользователь: "
+                )
+                .strip()
+                .lower()
+            )
+            ascending = "возрастанию" in order
             data = sort_by_date(data, ascending)
             print("Программа: Данные отсортированы")
 
-        elif choice == '6':
+        elif choice == "6":
             if not data:
                 print("Программа: Сначала загрузите данные")
                 continue
             data = filter_ruble_transactions(data)
             print("Программа: Оставлены только рублёвые транзакции")
 
-        elif choice == '7':
+        elif choice == "7":
             if not data:
                 print("Программа: Нет данных для отображения")
                 continue
