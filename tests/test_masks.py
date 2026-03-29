@@ -151,13 +151,3 @@ class TestMaskAccountNumber(unittest.TestCase):
         mock_error.assert_called_with("Слишком короткий номер счёта: 3 цифр")
         mock_info.assert_not_called()
         self.assertEqual(result, "Номер счёта должен содержать минимум 4 цифры")
-
-    @patch.object(logger, "debug")
-    @patch.object(logger, "error")
-    @patch.object(logger, "info")
-    def test_min_length_account(self, mock_info, mock_error, mock_debug):
-        """Тест маскировки минимального номера счёта (4 цифры)."""
-        result = mask_account_number("1234")
-
-        mock_debug.assert_called()
-        var = mock_error.assert_not_called

@@ -1,5 +1,5 @@
 import os
-from typing import Dict, Optional
+from typing import Any, Dict, Optional
 
 import requests
 from dotenv import load_dotenv
@@ -28,13 +28,18 @@ def get_exchange_rate(
     try:
         response = requests.get(BASE_URL, params=params)
         response.raise_for_status()
-        data = response.json()
-        return data["rates"][target_currency]
-    except requests.RequestException, KeyError:
+        data: Dict[str, Any] = response.json()
+
+        if "rates" in data and target_currency in data["rates"]:
+            rate: float = data["rates"][target_currency]
+            return rate
+        else:
+            return None
+    except (requests.RequestException, KeyError, TypeError, ValueError):
         return None
 
 
-def convert_to_rubles(transaction: Dict) -> float:
+def convert_to_rubles(transaction: Dict[str, Any]) -> float:
     """
     Конвертирует сумму транзакции в рубли.
 
