@@ -1,9 +1,10 @@
 import re
+from typing import Optional
 
 from src.masks import mask_account_number, mask_card_number
 
 
-def mask_account_card(card_number: str) -> str | None:
+def mask_account_card(card_number: str) -> Optional[str]:
     """
     Маскирует номер карты или счёта в строке.
     """

@@ -1,9 +1,10 @@
 import logging
 import os
 import re
+from typing import Optional
 
 
-def setup_logger():
+def setup_logger() -> Optional[logging.Logger]:
     log_file = "logs/masks.log"
     log_dir = os.path.dirname(log_file)
 
@@ -34,28 +35,34 @@ logger = setup_logger()
 def mask_card_number(card_number: str) -> str:
     # Очищаем от нечисловых символов
     cleaned = re.sub(r"\D", "", card_number)
-    logger.debug(f"Попытка замаскировать номер карты: {card_number}")
+    if logger is not None:
+        logger.debug(f"Попытка замаскировать номер карты: {card_number}")
 
     if len(cleaned) != 16:
-        logger.error(f"Некорректная длина номера карты: {len(cleaned)} цифр")
+        if logger is not None:
+            logger.error(f"Некорректная длина номера карты: {len(cleaned)} цифр")
         return "Номер карты должен содержать 16 цифр"
 
     # Маскируем номер
     masked = f"{cleaned[:6]}****{cleaned[-4:]}"
-    logger.info(f"Номер карты успешно замаскирован: {masked}")
+    if logger is not None:
+        logger.info(f"Номер карты успешно замаскирован: {masked}")
     return masked
 
 
 def mask_account_number(account_number: str) -> str:
     # Очищаем от нечисловых символов
     cleaned = re.sub(r"\D", "", account_number)
-    logger.debug(f"Попытка замаскировать номер счёта: {account_number}")
+    if logger is not None:
+        logger.debug(f"Попытка замаскировать номер счёта: {account_number}")
 
     if len(cleaned) < 4:
-        logger.error(f"Слишком короткий номер счёта: {len(cleaned)} цифр")
+        if logger is not None:
+            logger.error(f"Слишком короткий номер счёта: {len(cleaned)} цифр")
         return "Номер счёта должен содержать минимум 4 цифры"
 
     # Маскируем номер — показываем только последние 4 цифры
     masked = "**" + cleaned[-4:]
-    logger.info(f"Номер счёта успешно замаскирован: {masked}")
+    if logger is not None:
+        logger.info(f"Номер счёта успешно замаскирован: {masked}")
     return masked

@@ -1,73 +1,47 @@
 import csv
-import os
 from typing import Any, Dict, List, Optional
 
 import pandas as pd
 
 
 def load_csv_transactions(
-    file_path: str, **kwargs: Any
+    file_path: str, keyseparator: str = "."
 ) -> Optional[List[Dict[str, Any]]]:
-    """
-    Функция для загрузки финансовых операций из CSV‑файла.
-
-    Args:
-        file_path: путь к CSV‑файлу с транзакциями
-        **kwargs: дополнительные параметры для csv.DictReader или pd.read_csv()
-
-    Returns:
-        Список словарей с транзакциями или None при ошибке
-    """
+    """Загрузка транзакций из CSV‑файла."""
     try:
-        if not os.path.exists(file_path):
-            raise FileNotFoundError(f"Файл не найден: {file_path}")
-
-        # Используем csv.reader для большей гибкости
-        with open(file_path, "r", encoding=kwargs.get("encoding", "utf-8")) as f:
-            csv_params = {
-                "delimiter": kwargs.get("delimiter", ","),
-                "quotechar": kwargs.get("quotechar", '"'),
-            }
-            reader = csv.DictReader(f, **csv_params)
-            result: List[Dict[str, Any]] = []
+        transactions: List[Dict[str, Any]] = []
+        with open(file_path, "r", encoding="utf-8") as f:
+            reader = csv.DictReader(f)
             for row in reader:
-                # Приводим ключи к строкам (на всякий случай)
-                cleaned_row = {str(k): v for k, v in row.items()}
-                result.append(cleaned_row)
-        print(f"CSV загружен: {len(result)} записей")
-        return result
-
+                processed_row = {
+                    k.replace(".", keyseparator): v for k, v in row.items()
+                }
+                transactions.append(processed_row)
+        print(f"Загружено {len(transactions)} транзакций из CSV")
+        return transactions
+    except FileNotFoundError:
+        print(f"Ошибка: Файл {file_path} не найден")
+        return None
     except Exception as e:
-        print(f"Ошибка загрузки CSV {file_path}: {e}")
+        print(f"Ошибка при загрузке CSV: {e}")
         return None
 
 
 def load_excel_transactions(
-    file_path: str, **kwargs: Any
+    file_path: str, key_separator: str = "."
 ) -> Optional[List[Dict[str, Any]]]:
-    """
-    Функция для загрузки финансовых операций из Excel‑файла (XLSX/XLS).
-
-    Args:
-        file_path: путь к Excel‑файлу с транзакциями
-        **kwargs: дополнительные параметры для pd.read_excel()
-
-    Returns:
-        Список словарей с транзакциями или None при ошибке
-    """
+    """Загрузка транзакций из Excel‑файла"""
     try:
-        if not os.path.exists(file_path):
-            raise FileNotFoundError(f"Файл не найден: {file_path}")
-
-        default_excel_params: Dict[str, Any] = {"sheet_name": 0}
-        excel_params = {**default_excel_params, **kwargs}
-        df = pd.read_excel(file_path, **excel_params)
-        result: List[Dict[str, Any]] = [
-            {str(k): v for k, v in row.items()} for row in df.to_dict("records")
+        df = pd.read_excel(file_path)
+        transactions: List[Dict[str, Any]] = [
+            {str(k).replace(".", key_separator): v for k, v in row.items()}
+            for row in df.to_dict("records")
         ]
-        print(f"Excel загружен: {len(result)} записей")
-        return result
-
+        print(f"Загружено {len(transactions)} транзакций из Excel")
+        return transactions
+    except FileNotFoundError:
+        print(f"Ошибка: Файл {file_path} не найден")
+        return None
     except Exception as e:
-        print(f"Ошибка загрузки Excel {file_path}: {e}")
+        print(f"Ошибка при загрузке Excel: {e}")
         return None

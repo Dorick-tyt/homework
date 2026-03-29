@@ -1,44 +1,69 @@
 import functools
 import logging
+import sys
+from typing import Any, Callable, Optional, TypeVar
+
+# Для старых версий Python используем TypeVar для аргументов
+T = TypeVar("T")
+R = TypeVar("R")
 
 
-def log(filename=None):
+def log(
+    filename: Optional[str] = None,
+) -> Callable[[Callable[..., R]], Callable[..., R]]:
     """Декоратор для логирования выполнения функций."""
 
-    def decorator(func):
+    def decorator(func: Callable[..., R]) -> Callable[..., R]:
         @functools.wraps(func)
-        def wrapper(*args, **kwargs):
+        def wrapper(*args: Any, **kwargs: Any) -> R:
+            logger = logging.getLogger(f"decorator.{func.__name__}")
+
             # Настройка логирования
             if filename:
-                log_handler = logging.FileHandler(filename, mode="a")
+                log_handler: logging.Handler = logging.FileHandler(
+                    filename, mode="a", encoding="utf-8"
+                )
             else:
-                log_handler = logging.StreamHandler()
+                log_handler = logging.StreamHandler(sys.stdout)
 
             log_formatter = logging.Formatter(
                 "%(asctime)s - %(name)s - %(levelname)s: %(message)s"
             )
             log_handler.setFormatter(log_formatter)
-            logging.getLogger().addHandler(log_handler)
-            logging.getLogger().setLevel(logging.INFO)
+            logger.addHandler(log_handler)
+            logger.setLevel(logging.INFO)
 
             # Логирование начала выполнения функции
-            logging.info(f"Start: {func.__name__}")
+            logger.info(f"Start: {func.__name__}")
 
             try:
                 # Выполнение функции
-                result = func(*args, **kwargs)
-                logging.info(f"End: {func.__name__} - Result: {result}")
+                result: R = func(*args, **kwargs)
+                logger.info(f"End: {func.__name__} - Result: {result}")
                 return result
-            except Exception as e:
-                logging.error(f"End: {func.__name__}")
-                logging.error(f"Error: {type(e).__name__}, {e}")
-                logging.error(f"Args: {args}, {kwargs}")
+
+            except KeyboardInterrupt:
+                logger.error(f"End: {func.__name__} - Interrupted by user")
                 raise
+
+            except SystemExit:
+                logger.error(f"End: {func.__name__} - System exit")
+                raise
+
+            except Exception as e:
+                logger.error(f"End: {func.__name__}")
+                logger.error(f"Error: {type(e).__name__}, {e}")
+                logger.error(f"Args: {args}, {kwargs}")
+                # Пробрасываем исключение дальше
+                raise
+
             finally:
-                # Закрытие логгера (если логировались в файл)
-                if filename:
+                # Гарантированная очистка обработчика
+                try:
                     log_handler.close()
-                    logging.getLogger().removeHandler(log_handler)
+                    logger.removeHandler(log_handler)
+                except Exception:
+                    pass  # Игнорируем ошибки при очистке
 
         return wrapper
 

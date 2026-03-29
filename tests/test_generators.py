@@ -1,5 +1,5 @@
 import unittest
-from parameterized import parameterized
+from parameterized import parameterized  # type: ignore
 from src.generators import (
     filter_by_currency,
     transaction_descriptions,
