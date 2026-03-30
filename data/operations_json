@@ -1,4 +1,4 @@
-var = [
+[
     {
         "id": 441945886,
         "state": "EXECUTED",
