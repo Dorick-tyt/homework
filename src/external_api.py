@@ -35,7 +35,7 @@ def get_exchange_rate(
             return rate
         else:
             return None
-    except (requests.RequestException, KeyError, TypeError, ValueError):
+    except requests.RequestException, KeyError, TypeError, ValueError:
         return None
 
 

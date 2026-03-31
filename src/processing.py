@@ -10,7 +10,7 @@ def filter_by_status(
     """Фильтрация транзакций по статусу."""
     if status.upper() not in AVAILABLE_STATUSES:
         return None
-    filtered = [t for t in data if t.get("status", "").upper() == status.upper()]
+    filtered = [t for t in data if t.get("state", "").upper() == status.upper()]
     return filtered
 
 
