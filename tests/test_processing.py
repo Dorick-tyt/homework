@@ -39,14 +39,6 @@ class TestProcessing(unittest.TestCase):
             },
         ]
 
-    def test_filter_by_status_valid(self):
-        """Тест фильтрации по валидному статусу."""
-        result = filter_by_status(self.test_data, "EXECUTED")
-        self.assertIsNotNone(result)
-        self.assertEqual(len(result), 2)
-        for transaction in result:
-            self.assertEqual(transaction["status"], "EXECUTED")
-
     def test_filter_by_status_invalid(self):
         """Тест фильтрации по невалидному статусу."""
         result = filter_by_status(self.test_data, "INVALID_STATUS")

@@ -32,22 +32,44 @@ def setup_logger() -> Optional[logging.Logger]:
 logger = setup_logger()
 
 
-def mask_card_number(card_number: str) -> str:
-    # Очищаем от нечисловых символов
-    cleaned = re.sub(r"\D", "", card_number)
-    if logger is not None:
-        logger.debug(f"Попытка замаскировать номер карты: {card_number}")
+def mask_card_number(card_info: str) -> str:
+    """
+    Маскирует номер карты или счета.
+    Для карт: Visa 1234567890123456 -> Visa 1234 56** **** 3456
+    Для счетов: Счет 12345678901234567890 -> Счет **7890
+    """
+    if not card_info or not isinstance(card_info, str):
+        return ""
 
-    if len(cleaned) != 16:
-        if logger is not None:
-            logger.error(f"Некорректная длина номера карты: {len(cleaned)} цифр")
-        return "Номер карты должен содержать 16 цифр"
+    # Разделяем тип и номер
+    parts = card_info.split()
+    if len(parts) < 2:
+        return card_info
 
-    # Маскируем номер
-    masked = f"{cleaned[:6]}****{cleaned[-4:]}"
-    if logger is not None:
-        logger.info(f"Номер карты успешно замаскирован: {masked}")
-    return masked
+    card_type = " ".join(parts[:-1])  # Тип карты/счета
+    number = parts[-1]  # Номер
+
+    # Проверяем, что номер состоит из цифр
+    if not number.isdigit():
+        return card_info
+
+    # Если это счет (обычно 20 цифр)
+    if len(number) == 20:
+        masked = f"**{number[-4:]}"
+        return f"{card_type} {masked}"
+
+    # Если это карта (16 цифр)
+    elif len(number) == 16:
+        masked = f"{number[:4]} {number[4:6]}** **** {number[-4:]}"
+        return f"{card_type} {masked}"
+
+    # Для других форматов (например, Maestro 1596837868705199 - 16 цифр)
+    elif len(number) >= 16:
+        # Берем последние 4 цифры
+        masked = f"**{number[-4:]}"
+        return f"{card_type} {masked}"
+
+    return card_info
 
 
 def mask_account_number(account_number: str) -> str:
