@@ -1,44 +1,90 @@
-def get_mask_card_number(card_number: str) -> str:
+import logging
+import os
+import re
+from typing import Optional
+
+
+def setup_logger() -> Optional[logging.Logger]:
+    log_file = "logs/masks.log"
+    log_dir = os.path.dirname(log_file)
+
+    try:
+        os.makedirs(log_dir, exist_ok=True)
+        logging.info(f"Создана директория для логов: {log_dir}")
+    except Exception as exc:
+        print(f"Ошибка создания директории: {exc}")
+        return None
+
+    local_logger = logging.getLogger("masks")
+    local_logger.setLevel(logging.DEBUG)
+
+    file_handler = logging.FileHandler(log_file, mode="a", encoding="utf-8")
+    file_handler.setLevel(logging.DEBUG)
+    formatter = logging.Formatter(
+        "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    )
+    file_handler.setFormatter(formatter)
+    local_logger.addHandler(file_handler)
+    return local_logger
+
+
+# Получаем логгер при первом вызове
+logger = setup_logger()
+
+
+def mask_card_number(card_info: str) -> str:
     """
-    Маскирует номер банковской карты.
-    Формат вывода: XXXX XX** **** XXXX (видны первые 6 и последние 4 цифры, остальное — звёздочки;
-    разбивка по 4 цифры через пробел).
+    Маскирует номер карты или счета.
+    Для карт: Visa 1234567890123456 -> Visa 1234 56** **** 3456
+    Для счетов: Счет 12345678901234567890 -> Счет **7890
     """
-    # Удаляем пробелы и дефисы
-    cleaned = card_number.replace(" ", "").replace("-", "")
+    if not card_info or not isinstance(card_info, str):
+        return ""
 
-    # Проверяем, что строка содержит только цифры
-    if not cleaned.isdigit():
-        return str(ValueError("Номер карты должен содержать только цифры"))
+    # Разделяем тип и номер
+    parts = card_info.split()
+    if len(parts) < 2:
+        return card_info
 
-    # Проверяем длину — должна быть 16 цифрФормируем маску
-    if len(cleaned) != 16:
-        return str(ValueError("Номер карты должен содержать 16 цифр"))
+    card_type = " ".join(parts[:-1])  # Тип карты/счета
+    number = parts[-1]  # Номер
 
-    # Формируем маску
-    masked = cleaned[:4] + " " + cleaned[4:6] + "** **** " + cleaned[-4:]
-    return masked
+    # Проверяем, что номер состоит из цифр
+    if not number.isdigit():
+        return card_info
+
+    # Если это счет (обычно 20 цифр)
+    if len(number) == 20:
+        masked = f"**{number[-4:]}"
+        return f"{card_type} {masked}"
+
+    # Если это карта (16 цифр)
+    elif len(number) == 16:
+        masked = f"{number[:4]} {number[4:6]}** **** {number[-4:]}"
+        return f"{card_type} {masked}"
+
+    # Для других форматов (например, Maestro 1596837868705199 - 16 цифр)
+    elif len(number) >= 16:
+        # Берем последние 4 цифры
+        masked = f"**{number[-4:]}"
+        return f"{card_type} {masked}"
+
+    return card_info
 
 
-def get_mask_account(account_number: str) -> str:
-    """
-    Маскирует номер банковского счёта.
-    Формат вывода: **XXXX (видны только последние 4 цифры, перед ними — две звёздочки).
-    """
-    # Удаляем пробелы
-    cleaned = account_number.replace(" ", "")
+def mask_account_number(account_number: str) -> str:
+    # Очищаем от нечисловых символов
+    cleaned = re.sub(r"\D", "", account_number)
+    if logger is not None:
+        logger.debug(f"Попытка замаскировать номер счёта: {account_number}")
 
-    # Проверяем, что строка содержит только цифры
-    if not cleaned.isdigit():
-        return str(ValueError("Номер счёта должен содержать только цифры"))
-
-    # Проверяем минимальную длину
     if len(cleaned) < 4:
-        return str(ValueError("Номер счёта слишком короткий"))
+        if logger is not None:
+            logger.error(f"Слишком короткий номер счёта: {len(cleaned)} цифр")
+        return "Номер счёта должен содержать минимум 4 цифры"
 
-    # Берём последние 4 цифры
-    last_num = cleaned[-4:]
-    # Формируем маску: две звёздочки + последние 4 цифры
-    masked = "**" + last_num
-
+    # Маскируем номер — показываем только последние 4 цифры
+    masked = "**" + cleaned[-4:]
+    if logger is not None:
+        logger.info(f"Номер счёта успешно замаскирован: {masked}")
     return masked

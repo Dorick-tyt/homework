@@ -1,36 +1,87 @@
-from src.processing import filter_by_state, sort_by_date
+import unittest
+from src.processing import (
+    filter_by_status,
+    sort_by_date,
+    search_transactions_by_description,
+    count_transactions_by_categories,
+    filter_ruble_transactions,
+)
 
 
-def sample_data():
-    return [
-        {"id": 1, "state": "EXECUTED", "date": "2023-01-01T10:00:00"},
-        {"id": 2, "state": "PENDING", "date": "2023-01-02T11:00:00"},
-        {"id": 3, "state": "EXECUTED", "date": "2023-01-03T12:00:00"},
-        {"id": 4, "state": "FAILED", "date": "2023-01-04T13:00:00"},
-    ]
+class TestProcessing(unittest.TestCase):
 
-
-class TestProcessingFunctions:
-
-    # Тесты для filter_by_state
-    def test_filter_by_state_default(self):
-        """Тест filter_by_state с состоянием по умолчанию (EXECUTED)."""
-        data = sample_data()
-        result = filter_by_state(data)
-        assert len(result) == 2
-        assert all(item["state"] == "EXECUTED" for item in result)
-
-    # Тесты для sort_by_date
-    def test_sort_by_date_descending(self):
-        """Тест sort_by_date — сортировка по убыванию даты (по умолчанию)."""
-        data = sample_data()
-        result = sort_by_date(data)
-        dates = [item["date"] for item in result]
-        expected_dates = [
-            "2023-01-04T13:00:00",  # id: 4 (самая новая дата)
-            "2023-01-03T12:00:00",  # id: 3
-            "2023-01-02T11:00:00",  # id: 2
-            "2023-01-01T10:00:00",  # id: 1 (самая старая дата)
+    def setUp(self):
+        """Подготовка тестовых данных."""
+        self.test_data = [
+            {
+                "id": 1,
+                "date": "2024-01-01 10:00:00",
+                "amount": 1000,
+                "description": "Salary payment",
+                "status": "EXECUTED",
+                "currency": "RUB",
+            },
+            {
+                "id": 2,
+                "date": "2024-01-02 11:30:00",
+                "amount": 500,
+                "description": "Groceries shopping",
+                "status": "PENDING",
+                "currency": "USD",
+            },
+            {
+                "id": 3,
+                "date": "2024-01-03 09:15:00",
+                "amount": 200,
+                "description": "Coffee with friends",
+                "status": "EXECUTED",
+                "currency": "руб",
+            },
         ]
-        assert [item["id"] for item in result] == [4, 3, 2, 1]
-        assert dates == expected_dates
+
+    def test_filter_by_status_invalid(self):
+        """Тест фильтрации по невалидному статусу."""
+        result = filter_by_status(self.test_data, "INVALID_STATUS")
+        self.assertIsNone(result)
+
+    def test_sort_by_date_ascending(self):
+        """Тест сортировки по дате (возрастание)."""
+        result = sort_by_date(self.test_data, ascending=True)
+        dates = [t["date"] for t in result]
+        self.assertEqual(dates, sorted(dates))
+
+    def test_sort_by_date_descending(self):
+        """Тест сортировки по дате (убывание)."""
+        result = sort_by_date(self.test_data, ascending=False)
+        dates = [t["date"] for t in result]
+        self.assertEqual(dates, sorted(dates, reverse=True))
+
+    def test_search_transactions_by_description_match(self):
+        """Тест поиска транзакций по описанию (совпадение)."""
+        result = search_transactions_by_description(self.test_data, "Groceries")
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0]["description"], "Groceries shopping")
+
+    def test_search_transactions_by_description_regex(self):
+        """Тест поиска с использованием регулярных выражений."""
+        result = search_transactions_by_description(self.test_data, r"Coffee.*friends")
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0]["description"], "Coffee with friends")
+
+    def test_search_transactions_by_description_no_match(self):
+        """Тест поиска без совпадений."""
+        result = search_transactions_by_description(self.test_data, "Nonexistent")
+        self.assertEqual(len(result), 0)
+
+    def test_count_transactions_by_categories(self):
+        """Тест подсчёта транзакций по категориям."""
+        categories = ["Groceries", "Coffee", "Salary"]
+        result = count_transactions_by_categories(self.test_data, categories)
+        self.assertEqual(result["Groceries"], 1)
+        self.assertEqual(result["Coffee"], 1)
+        self.assertEqual(result["Salary"], 1)
+
+    def test_filter_ruble_transactions(self):
+        """Тест фильтрации рублёвых транзакций."""
+        result = filter_ruble_transactions(self.test_data)
+        self.assertEqual(len(result), 2)
